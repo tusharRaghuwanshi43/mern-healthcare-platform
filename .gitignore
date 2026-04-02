@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+
+# Build Outputs (Frontend/Backend)
+/frontend/dist/
+/frontend/build/
+/backend/dist/
+/backend/build/
+dist/
+build/
+
+# Environment Configurations & Secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+
+# Log Files
+logs/
+*.log
+
+# System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE and Editor Directories
+.vscode/
+.idea/
+.vs/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+
+# Testing and Coverage
+coverage/
+.nyc_output/
+
+# Temporary Files
+/tmp
+*.tmp
+*.bak
