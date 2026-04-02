@@ -132,6 +132,6 @@ Please ensure your code runs successfully in local compilation (`npm run build`)
 
 ## 📄 License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the Apache License 2.0. See `LICENSE` for more information.
 
 > *Redefining clinical excellence, one line of code at a time.*
