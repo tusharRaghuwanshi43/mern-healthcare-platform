@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { GoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import logo from '../assets/logo.png';
 import { setCredentials } from '../redux/authSlice';
 import { User, Lock, Mail, Activity, ArrowRight, ShieldCheck, UserSquare, Stethoscope, MapPin, Eye, EyeOff } from 'lucide-react';
 const Signup = () => {
@@ -103,13 +104,12 @@ const Signup = () => {
                 ) : (
                     <>
                         <div className="mb-8 text-center">
+                            {/* Logo */}
                             <div className="inline-flex items-center justify-center space-x-2 mb-6">
-                                <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary-500/30">
-                                    <Activity className="w-6 h-6" />
-                                </div>
-                                <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-700 to-primary-500 tracking-tight">Appointy</span>
+                                <img src={logo} alt="logo" className="h-9 mt-4 w-auto object-contain" />
+                                <span className="font-extrabold mr-7 mt-6 text-2xl text-slate-800 dark:text-white tracking-tight">Appointy</span>
                             </div>
-                            <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight mb-2">Create Account</h2>
+                            <h2 className="text-3xl font-[1000] bg-clip-text text-transparent bg-gradient-to-r from-primary-700 to-primary-500 tracking-tight">Create Account</h2>
                             <p className="text-slate-500 text-sm">Join the platform to manage your healthcare seamlessly.</p>
                         </div>
                         {/* Unified Tab Selector */}

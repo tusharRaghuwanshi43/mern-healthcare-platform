@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { GoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import logo from '../assets/logo.png';
 import { setCredentials } from '../redux/authSlice';
 import { Lock, Mail, Activity, ArrowRight, UserSquare, Stethoscope, Eye, EyeOff } from 'lucide-react';
 const Login = () => {
@@ -68,13 +69,12 @@ const Login = () => {
             <div className="bg-white dark:bg-slate-900 p-8 md:p-10 rounded-[2.5rem] shadow-2xl w-full max-w-lg border border-white/60 dark:border-slate-800 relative z-10 backdrop-blur-xl bg-white/90 dark:bg-slate-900/95">
 
                 <div className="mb-8 text-center">
+                    {/* Logo */}
                     <div className="inline-flex items-center justify-center space-x-2 mb-6">
-                        <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary-500/30">
-                            <Activity className="w-6 h-6" />
-                        </div>
-                        <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-700 to-primary-500 tracking-tight">Appointy</span>
+                        <img src={logo} alt="logo" className="h-9 mt-4 w-auto object-contain" />
+                        <span className="font-extrabold mr-7 mt-6 text-2xl text-slate-800 dark:text-white tracking-tight">Appointy</span>
                     </div>
-                    <h2 className="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight mb-2">Welcome Back</h2>
+                    <h2 className="text-3xl font-[1000] bg-clip-text text-transparent bg-gradient-to-r from-primary-700 to-primary-500 tracking-tight">Welcome Back</h2>
                     <p className="text-slate-500 dark:text-slate-400 text-sm">Secure access to your healthcare portal.</p>
                 </div>
                 {/* Unified Tab Selector */}

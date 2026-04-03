@@ -6,6 +6,7 @@ import femaleSpecialist from '../assets/female_specialist.png';
 import { useSelector } from 'react-redux';
 import { Navigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import logo from '../assets/logo.png';
 import DemoModal from '../components/DemoModal';
 import HeroSection from '../components/HeroSection';
 const Landing = () => {
@@ -327,8 +328,8 @@ const Landing = () => {
             <footer className="bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 py-12 px-6">
                 <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="flex items-center space-x-2 font-bold text-xl text-primary-600 dark:text-primary-400">
-                        <Activity className="w-6 h-6" />
-                        <span>Appointy</span>
+                        <img src={logo} alt="logo" className="h-8 mb-2 w-auto object-contain" />
+                        <span className='font-extrabold text-xl text-slate-800 dark:text-white tracking-tight'>Appointy</span>
                     </div>
                     <p className="text-slate-500 dark:text-slate-400 font-medium text-sm">© 2026 Appointy Technologies. All rights reserved.</p>
                     <div className="flex gap-6 text-sm font-bold text-slate-600 dark:text-slate-400">
