@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../redux/authSlice';
 import { Activity, LogOut, Menu, X, Sun, Moon, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import logo from '../assets/logo.png';
 
 const Navbar = () => {
     const { userInfo } = useSelector((state) => state.auth);
@@ -115,10 +116,10 @@ const Navbar = () => {
 
                 {/* Logo */}
                 <Link to="/" onClick={scrollToTop} className="flex items-center space-x-2 group">
-                    <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center text-white shadow-sm group-hover:bg-primary-700 transition-colors">
-                        <Activity className="w-5 h-5" />
-                    </div>
-                    <span className="font-extrabold text-2xl text-slate-800 dark:text-white tracking-tight">Appointy</span>
+                    <img src={logo} alt="logo" className="h-10 mb-3 w-auto object-contain" />
+                    <span className="font-extrabold text-2xl text-slate-800 dark:text-white tracking-tight">
+                        Appointy
+                    </span>
                 </Link>
 
                 {/* Desktop Menu */}
