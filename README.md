@@ -1,6 +1,6 @@
 # Appointy - AI-Powered MERN Healthcare Platform 🏥✨
 
-![Appointy Logo](frontend/src/assets/logo.png)
+![Appointy Logo]<img src="./frontend/src/assets/logo.png" width="180"/>
 
 Welcome to **Appointy**, a premium open-source healthcare platform designed to seamlessly bridge the gap between patients and specialized care providers. Built on the modern MERN stack, Appointy features **Chopper AI**, an intelligent symptom-analysis triage assistant powered by Google Gemini, a sleek animated interface, and robust scheduling mechanisms.
 
