@@ -1,23 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaCalendarAlt, FaClock, FaCheckCircle, FaUserMd } from 'react-icons/fa';
-// Mock doctor details for demonstration
-const MOCK_DOCTOR = {
-    name: 'Dr. Sarah Jenkins',
-    specialty: 'Cardiologist',
-    fee: 150,
-    image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=300&h=300'
-};
+import axios from 'axios';
+
 const INITIAL_AVAILABLE_SLOTS = [
     '09:00 AM', '09:30 AM', '10:00 AM', '11:30 AM',
     '01:00 PM', '02:00 PM', '03:30 PM', '04:00 PM'
 ];
+
 const AppointmentBooking = () => {
     const { doctorId } = useParams();
+    const navigate = useNavigate();
+
+    const [doctor, setDoctor] = useState(null);
+    const [loadingDoctor, setLoadingDoctor] = useState(true);
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedSlot, setSelectedSlot] = useState('');
     const [isBookingDetailsVisible, setBookingDetailsVisible] = useState(false);
+
+    // Fetch real doctor data from API using the doctorId from the URL
+    useEffect(() => {
+        if (!doctorId) return;
+        setLoadingDoctor(true);
+        axios.get(`http://localhost:5000/api/doctors/${doctorId}`)
+            .then(res => setDoctor(res.data))
+            .catch(err => {
+                console.error('Failed to load doctor:', err);
+                setDoctor(null);
+            })
+            .finally(() => setLoadingDoctor(false));
+    }, [doctorId]);
+
     // Generate upcoming 7 days for the date picker
     const getUpcomingDays = () => {
         const days = [];
@@ -34,15 +48,40 @@ const AppointmentBooking = () => {
         return days;
     };
     const upcomingDays = getUpcomingDays();
+
     const handleSlotSelection = (slot) => {
         setSelectedSlot(slot);
         setBookingDetailsVisible(true);
     };
-    const navigate = useNavigate();
+
     const handleConfirmBooking = () => {
-        // Transition to real payment gateway flow
-        navigate('/checkout', { state: { fee: MOCK_DOCTOR.fee, date: selectedDate, slot: selectedSlot, doctor: MOCK_DOCTOR.name } });
+        navigate('/checkout', {
+            state: {
+                fee: doctor?.consultationFee,
+                date: selectedDate,
+                slot: selectedSlot,
+                doctor: doctor?.name
+            }
+        });
     };
+
+    if (loadingDoctor) {
+        return (
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 flex items-center justify-center">
+                <div className="animate-spin w-10 h-10 border-4 border-primary-500 border-t-transparent rounded-full"></div>
+            </div>
+        );
+    }
+
+    if (!doctor) {
+        return (
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
+                <p className="text-xl font-semibold text-slate-600">Doctor profile not found.</p>
+                <button onClick={() => navigate('/doctors')} className="mt-4 text-primary-600 font-bold hover:underline">← Browse Doctors</button>
+            </div>
+        );
+    }
+
     return (
         <motion.div
             initial={{ opacity: 0 }}
@@ -52,18 +91,22 @@ const AppointmentBooking = () => {
             <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden mb-8">
                 <div className="p-8 md:flex md:items-center md:justify-between border-b border-slate-100 bg-slate-50">
                     <div className="flex items-center space-x-6">
-                        <img src={MOCK_DOCTOR.image} alt="Doctor" className="w-24 h-24 rounded-full border-4 border-white shadow-md object-cover" />
+                        <img
+                            src={doctor.profilePhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(doctor.name)}&background=c084fc&color=fff&size=100`}
+                            alt={doctor.name}
+                            className="w-24 h-24 rounded-full border-4 border-white shadow-md object-cover"
+                        />
                         <div>
-                            <h1 className="text-3xl font-bold text-slate-800 tracking-tight">{MOCK_DOCTOR.name}</h1>
+                            <h1 className="text-3xl font-bold text-slate-800 tracking-tight">{doctor.name}</h1>
                             <div className="flex items-center text-primary-600 font-medium mt-1">
                                 <FaUserMd className="mr-2" />
-                                {MOCK_DOCTOR.specialty}
+                                {doctor.specialty}
                             </div>
                         </div>
                     </div>
                     <div className="mt-6 md:mt-0 text-left md:text-right">
                         <div className="text-slate-500 text-sm">Consultation Fee</div>
-                        <div className="text-3xl font-bold text-slate-800">${MOCK_DOCTOR.fee}</div>
+                        <div className="text-3xl font-bold text-slate-800">${doctor.consultationFee}</div>
                     </div>
                 </div>
                 <div className="p-8">
@@ -138,18 +181,23 @@ const AppointmentBooking = () => {
                                 Booking Summary
                             </h3>
                             <p className="text-slate-600 text-lg mb-1">
-                                Appointment with <span className="font-bold text-slate-800">{MOCK_DOCTOR.name}</span>
+                                Appointment with <span className="font-bold text-slate-800">{doctor.name}</span>
                             </p>
                             <p className="text-slate-600">
                                 Date: <span className="font-bold text-slate-800">{selectedDate}</span> at <span className="font-bold text-slate-800">{selectedSlot}</span>
                             </p>
                         </div>
-                        <button
-                            onClick={handleConfirmBooking}
-                            className="bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-8 rounded-full shadow-md hover:shadow-lg transition-all transform hover:-translate-y-1"
-                        >
-                            Proceed to Pay ${MOCK_DOCTOR.fee}
-                        </button>
+                        <div className="flex flex-col items-center gap-3 ml-6 flex-shrink-0">
+                            <p className="text-sm text-slate-500 font-medium text-center max-w-[180px] leading-relaxed">
+                                🔐 Create an account before making an appointment.
+                            </p>
+                            <button
+                                onClick={() => navigate('/signup')}
+                                className="bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-8 rounded-full shadow-md hover:shadow-lg transition-all transform hover:-translate-y-1 whitespace-nowrap"
+                            >
+                                Sign Up →
+                            </button>
+                        </div>
                     </div>
                 </motion.div>
             )}

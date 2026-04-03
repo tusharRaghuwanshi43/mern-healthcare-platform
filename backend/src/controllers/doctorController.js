@@ -354,10 +354,27 @@ const deleteDoctorProfile = async (req, res) => {
         res.status(500).json({ message: 'Server error deleting profile' });
     }
 };
+// @desc    Get a single doctor by ID (public)
+// @route   GET /api/doctors/:id
+// @access  Public
+const getDoctorById = async (req, res) => {
+    try {
+        const doctor = await Doctor.findById(req.params.id).select('-password');
+        if (doctor) {
+            res.status(200).json(doctor);
+        } else {
+            res.status(404).json({ message: 'Doctor not found' });
+        }
+    } catch (error) {
+        console.error('Get Doctor By ID Error:', error);
+        res.status(500).json({ message: 'Server error fetching doctor' });
+    }
+};
 module.exports = {
     registerDoctor,
     loginDoctor,
     getDoctors,
+    getDoctorById,
     getDoctorProfile,
     updateDoctorProfile,
     deleteDoctorProfile,
