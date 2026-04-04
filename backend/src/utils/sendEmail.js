@@ -11,7 +11,7 @@ const sendEmail = async ({ email, subject, html }) => {
             },
         });
         const mailOptions = {
-            from: `"Appointy Support" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+            from: `"Appointy Support" <${process.env.SMTP_FROM}>`,
             to: email,
             subject: subject,
             html: html,

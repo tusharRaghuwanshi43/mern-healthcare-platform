@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Navigate, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { logout, setCredentials } from '../redux/authSlice';
+import logo from '../assets/logo.png';
 import { Calendar, Clock, LogOut, Home, Users, Settings, Activity, Star, ClipboardList, Wallet, Camera, Edit3, ClipboardCheck, Mail, Phone, X, ChevronRight, MapPin, ShieldAlert, Search } from 'lucide-react';
 const DoctorDashboard = () => {
     const { userInfo } = useSelector((state) => state.auth);
@@ -187,11 +188,12 @@ const DoctorDashboard = () => {
             <div className="w-64 bg-white border-r border-slate-100 flex flex-col justify-between hidden md:flex shadow-sm z-20">
                 <div>
                     <div className="p-6">
-                        <Link to="/" className="flex items-center space-x-2 font-bold text-2xl text-primary-600 tracking-tight">
-                            <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center text-white text-lg shadow-sm">
-                                <Activity className="w-5 h-5" />
-                            </div>
-                            <span>Appointy Pro</span>
+                        {/* Logo */}
+                        <Link to="/" className="flex items-center space-x-2 group">
+                            <img src={logo} alt="logo" className="h-10 mb-3 w-auto object-contain" />
+                            <span className="font-extrabold text-2xl text-slate-800 dark:text-white tracking-tight">
+                                Appointy
+                            </span>
                         </Link>
                     </div>
                     <div className="px-4 py-2">

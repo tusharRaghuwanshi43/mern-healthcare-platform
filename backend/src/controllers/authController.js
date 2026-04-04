@@ -35,7 +35,7 @@ const registerUser = async (req, res) => {
             const verifyToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '15m' });
             const verifyUrl = `http://localhost:5173/verify-email/${verifyToken}`;
 
-            console.log(`[Mock Email] Please verify your email by clicking: ${verifyUrl}`);
+            // console.log(`[Mock Email] Please verify your email by clicking: ${verifyUrl}`);
             // Send real email
             try {
                 await sendEmail({
