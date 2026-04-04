@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import logo from '../assets/logo.png';
 import { Calendar, Clock, LogOut, Home, Search, History, Settings, Activity, User, Star, FileText, CreditCard, ShieldAlert, Phone, Mail } from 'lucide-react';
 import { setCredentials, logout } from '../redux/authSlice';
 const PatientDashboard = () => {
@@ -77,7 +78,7 @@ const PatientDashboard = () => {
             fetchAppointments();
             fetchUserProfile();
         }
-    }, [userInfo]);
+    }, [userInfo, navigate]);
     const handleLogout = () => {
         dispatch(logout());
         navigate('/');
@@ -238,11 +239,12 @@ const PatientDashboard = () => {
             <div className="w-64 bg-white border-r border-slate-100 flex flex-col justify-between hidden md:flex shadow-sm z-20">
                 <div>
                     <div className="p-6">
-                        <Link to="/" className="flex items-center space-x-2 font-bold text-2xl text-primary-600 tracking-tight">
-                            <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center text-white text-lg shadow-sm">
-                                <Activity className="w-5 h-5" />
-                            </div>
-                            <span>Appointy</span>
+                        {/* Logo */}
+                        <Link to="/" className="flex items-center space-x-2 group">
+                            <img src={logo} alt="logo" className="h-10 mb-3 w-auto object-contain" />
+                            <span className="font-extrabold text-2xl text-slate-800 dark:text-white tracking-tight">
+                                Appointy
+                            </span>
                         </Link>
                     </div>
                     <div className="px-4 py-2">
@@ -304,10 +306,13 @@ const PatientDashboard = () => {
             </div>
             {/* Mobile Header */}
             <div className="md:hidden fixed top-0 w-full bg-white border-b border-slate-100 p-4 flex justify-between items-center z-30 shadow-sm">
-                <div className="flex items-center space-x-2 font-bold text-xl text-primary-600">
-                    <Activity className="w-6 h-6" />
-                    <span>Appointy</span>
-                </div>
+                {/* Logo */}
+                <Link to="/" className="flex items-center space-x-2 group">
+                    <img src={logo} alt="logo" className="h-10 mb-3 w-auto object-contain" />
+                    <span className="font-extrabold text-2xl text-slate-800 dark:text-white tracking-tight">
+                        Appointy
+                    </span>
+                </Link>
                 <button onClick={handleLogout} className="p-2 text-slate-500 hover:text-red-500">
                     <LogOut className="w-5 h-5" />
                 </button>

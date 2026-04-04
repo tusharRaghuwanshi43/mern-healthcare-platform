@@ -2,22 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaCalendarAlt, FaClock, FaCheckCircle, FaUserMd } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-hot-toast';
 import axios from 'axios';
-
-const INITIAL_AVAILABLE_SLOTS = [
-    '09:00 AM', '09:30 AM', '10:00 AM', '11:30 AM',
-    '01:00 PM', '02:00 PM', '03:30 PM', '04:00 PM'
-];
 
 const AppointmentBooking = () => {
     const { doctorId } = useParams();
     const navigate = useNavigate();
+    const { userInfo } = useSelector((state) => state.auth);
 
     const [doctor, setDoctor] = useState(null);
     const [loadingDoctor, setLoadingDoctor] = useState(true);
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedSlot, setSelectedSlot] = useState('');
     const [isBookingDetailsVisible, setBookingDetailsVisible] = useState(false);
+    const [bookingLoading, setBookingLoading] = useState(false);
 
     // Fetch real doctor data from API using the doctorId from the URL
     useEffect(() => {
@@ -32,37 +31,77 @@ const AppointmentBooking = () => {
             .finally(() => setLoadingDoctor(false));
     }, [doctorId]);
 
-    // Generate upcoming 7 days for the date picker
+    // Generate upcoming 7 days, filtering by doctor's specific availability days
     const getUpcomingDays = () => {
+        if (!doctor || !doctor.availability) return [];
         const days = [];
-        for (let i = 1; i <= 7; i++) {
-            const date = new Date();
-            date.setDate(date.getDate() + i);
-            days.push({
-                fullDate: date.toISOString().split('T')[0],
-                displayDay: date.toLocaleDateString('en-US', { weekday: 'short' }),
-                displayDate: date.getDate(),
-                displayMonth: date.toLocaleDateString('en-US', { month: 'short' })
-            });
+        const availableDayNames = doctor.availability.map(a => a.day);
+
+        // Get tomorrow as start date
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() + 1);
+
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(startDate);
+            date.setDate(startDate.getDate() + i);
+            
+            const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+            
+            if (availableDayNames.includes(dayName)) {
+                days.push({
+                    fullDate: date.toISOString().split('T')[0],
+                    displayDay: date.toLocaleDateString('en-US', { weekday: 'short' }),
+                    displayDate: date.getDate(),
+                    displayMonth: date.toLocaleDateString('en-US', { month: 'short' }),
+                    dayName: dayName
+                });
+            }
         }
         return days;
     };
     const upcomingDays = getUpcomingDays();
+
+    // Get specific slots for the selected date
+    const getAvailableSlots = () => {
+        if (!selectedDate || !doctor) return [];
+        const selectedDayDate = new Date(selectedDate);
+        const dayName = selectedDayDate.toLocaleDateString('en-US', { weekday: 'long' });
+        const dayConfig = doctor.availability.find(a => a.day === dayName);
+        return dayConfig ? dayConfig.slots : [];
+    };
+    const currentAvailableSlots = getAvailableSlots();
 
     const handleSlotSelection = (slot) => {
         setSelectedSlot(slot);
         setBookingDetailsVisible(true);
     };
 
-    const handleConfirmBooking = () => {
-        navigate('/checkout', {
-            state: {
-                fee: doctor?.consultationFee,
+    const handleBookAppointment = async () => {
+        if (!userInfo) return;
+        setBookingLoading(true);
+        try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userInfo.token}`,
+                },
+            };
+            const appointmentData = {
+                doctorId: doctor._id,
                 date: selectedDate,
-                slot: selectedSlot,
-                doctor: doctor?.name
-            }
-        });
+                timeSlot: selectedSlot,
+                consultationFee: doctor.consultationFee
+            };
+            await axios.post('http://localhost:5000/api/appointments/book', appointmentData, config);
+            toast.success('Appointment request sent! Wait for doctor approval.');
+            const dashboardPath = userInfo.role === 'doctor' ? '/doctor/dashboard' : '/patient/dashboard';
+            navigate(dashboardPath);
+        } catch (error) {
+            console.error('Booking error:', error);
+            const message = error.response?.data?.message || 'Failed to book appointment.';
+            toast.error(message);
+        } finally {
+            setBookingLoading(false);
+        }
     };
 
     if (loadingDoctor) {
@@ -152,18 +191,22 @@ const AppointmentBooking = () => {
                         </h2>
 
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                            {INITIAL_AVAILABLE_SLOTS.map((slot) => (
-                                <button
-                                    key={slot}
-                                    onClick={() => handleSlotSelection(slot)}
-                                    className={`py-3 px-4 rounded-xl text-center font-medium transition-all ${selectedSlot === slot
-                                            ? 'bg-amber-500 text-white shadow-md'
-                                            : 'bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100 hover:border-slate-300'
-                                        }`}
-                                >
-                                    {slot}
-                                </button>
-                            ))}
+                            {currentAvailableSlots.length > 0 ? (
+                                currentAvailableSlots.map((slot) => (
+                                    <button
+                                        key={slot}
+                                        onClick={() => handleSlotSelection(slot)}
+                                        className={`py-3 px-4 rounded-xl text-center font-medium transition-all ${selectedSlot === slot
+                                                ? 'bg-amber-500 text-white shadow-md'
+                                                : 'bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100 hover:border-slate-300'
+                                            }`}
+                                    >
+                                        {slot}
+                                    </button>
+                                ))
+                            ) : (
+                                <p className="col-span-full text-center text-slate-500 py-4 italic">No slots configured for this day.</p>
+                            )}
                         </div>
                     </motion.div>
                 )}
@@ -187,21 +230,38 @@ const AppointmentBooking = () => {
                                 Date: <span className="font-bold text-slate-800">{selectedDate}</span> at <span className="font-bold text-slate-800">{selectedSlot}</span>
                             </p>
                         </div>
-                        <div className="flex flex-col items-center gap-3 ml-6 flex-shrink-0">
-                            <p className="text-sm text-slate-500 font-medium text-center max-w-[180px] leading-relaxed">
-                                🔐 Create an account before making an appointment.
-                            </p>
-                            <button
-                                onClick={() => navigate('/signup')}
-                                className="bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-8 rounded-full shadow-md hover:shadow-lg transition-all transform hover:-translate-y-1 whitespace-nowrap"
-                            >
-                                Sign Up →
-                            </button>
-                        </div>
+
+                        {userInfo ? (
+                            <div className="flex flex-col items-center gap-3 ml-6 flex-shrink-0">
+                                <p className="text-sm text-slate-500 font-medium text-center max-w-[180px] leading-relaxed italic">
+                                    Ready to confirm?
+                                </p>
+                                <button
+                                    onClick={handleBookAppointment}
+                                    disabled={bookingLoading}
+                                    className="bg-primary-600 hover:bg-primary-700 disabled:bg-slate-400 text-white font-bold py-3 px-8 rounded-full shadow-md hover:shadow-lg transition-all transform hover:-translate-y-1 whitespace-nowrap min-w-[200px]"
+                                >
+                                    {bookingLoading ? 'Processing...' : 'Request Appointment →'}
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="flex flex-col items-center gap-3 ml-6 flex-shrink-0">
+                                <p className="text-sm text-slate-500 font-medium text-center max-w-[180px] leading-relaxed">
+                                    🔐 Create an account before making an appointment.
+                                </p>
+                                <button
+                                    onClick={() => navigate('/signup')}
+                                    className="bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-8 rounded-full shadow-md hover:shadow-lg transition-all transform hover:-translate-y-1 whitespace-nowrap"
+                                >
+                                    Sign Up →
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </motion.div>
             )}
         </motion.div>
     );
 };
+
 export default AppointmentBooking;

@@ -56,7 +56,7 @@ const analyzeSymptoms = async (req, res) => {
         })
         .sort({ averageRating: -1, totalReviews: -1 })
         .limit(3)
-        .select('name specialty profilePhoto averageRating totalReviews experienceYears consultationFee');
+        .select('name specialty profilePhoto averageRating totalReviews experienceYears consultationFee availability');
 
         res.status(200).json({
             analysis: resultJSON,

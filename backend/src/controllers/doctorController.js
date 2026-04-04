@@ -37,7 +37,7 @@ const registerDoctor = async (req, res) => {
             const verifyToken = jwt.sign({ userId: doctor._id }, process.env.JWT_SECRET, { expiresIn: '15m' });
             const verifyUrl = `http://localhost:5173/verify-email/${verifyToken}`;
 
-            console.log(`[Mock Email] Provider Verification Link: ${verifyUrl}`);
+            // console.log(`[Mock Email] Provider Verification Link: ${verifyUrl}`);
             // Send real email
             try {
                 await sendEmail({
