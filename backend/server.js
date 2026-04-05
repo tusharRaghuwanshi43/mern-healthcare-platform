@@ -1,14 +1,30 @@
 const express = require('express');
 const dotenv = require('dotenv');
-dotenv.config(); // MUST BE CALLED BEFORE REQUIRING OTHER MODULES THAT USE process.env
 const cors = require('cors');
 const connectDB = require('./src/config/db');
-const authRoutes = require('./src/routes/authRoutes');
-const userRoutes = require('./src/routes/userRoutes');
-const paymentRoutes = require('./src/routes/paymentRoutes');
-const doctorRoutes = require('./src/routes/doctorRoutes');
-connectDB();
+
+// Load env variables FIRST
+dotenv.config();
+
 const app = express();
+
+// 🔁 Handle DB connection safely for serverless
+let isConnected = false;
+const connectDatabase = async () => {
+    if (!isConnected) {
+        await connectDB();
+        isConnected = true;
+        console.log("MongoDB connected");
+    }
+};
+
+// Middleware to ensure DB is connected before handling requests
+app.use(async (req, res, next) => {
+    await connectDatabase();
+    next();
+});
+
+// CORS config
 const corsOptions = {
     origin: [
         'https://appointy-healthcare.netlify.app',
@@ -19,18 +35,29 @@ const corsOptions = {
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
 };
+
 app.use(cors(corsOptions));
 app.use(express.json());
+
+// Routes
 app.get('/', (req, res) => {
     res.send('Appointy API is running...');
 });
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/payments', paymentRoutes);
-app.use('/api/doctors', doctorRoutes);
+
+app.use('/api/auth', require('./src/routes/authRoutes'));
+app.use('/api/users', require('./src/routes/userRoutes'));
+app.use('/api/payments', require('./src/routes/paymentRoutes'));
+app.use('/api/doctors', require('./src/routes/doctorRoutes'));
 app.use('/api/appointments', require('./src/routes/appointmentRoutes'));
 app.use('/api/ai', require('./src/routes/aiRoutes'));
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+
+// ✅ LOCAL ONLY: run server
+if (process.env.NODE_ENV !== 'production') {
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
+
+// ❗ IMPORTANT: DO NOT use app.listen() in Vercel
+module.exports = app;
