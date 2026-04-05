@@ -5,7 +5,7 @@ import doctorPortrait from '../assets/doctor_portrait.png';
 import femaleSpecialist from '../assets/female_specialist.png';
 import { useSelector } from 'react-redux';
 import { Navigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../utils/api';
 import logo from '../assets/logo.png';
 import DemoModal from '../components/DemoModal';
 import HeroSection from '../components/HeroSection';
@@ -18,7 +18,7 @@ const Landing = () => {
     useEffect(() => {
         const fetchDoctors = async () => {
             try {
-                const { data } = await axios.get('http://localhost:5000/api/doctors');
+                const { data } = await api.get('/api/doctors');
                 // Sort by averageRating descending, take top 3
                 const sorted = [...data].sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0)).slice(0, 3);
                 setTopDoctors(sorted);
@@ -29,7 +29,7 @@ const Landing = () => {
         const fetchReviews = async () => {
             try {
                 setLoadingReviews(true);
-                const { data } = await axios.get('http://localhost:5000/api/doctors/reviews/all');
+                const { data } = await api.get('/api/doctors/reviews/all');
                 setReviews(data);
             } catch (err) {
                 console.error('Failed to load reviews for landing:', err);

@@ -9,7 +9,18 @@ const paymentRoutes = require('./src/routes/paymentRoutes');
 const doctorRoutes = require('./src/routes/doctorRoutes');
 connectDB();
 const app = express();
-app.use(cors());
+const corsOptions = {
+    origin: [
+        'https://appointy-healthcare.netlify.app',
+        'http://localhost:5173',
+        'http://localhost:3000'
+    ],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+};
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Handle preflight for all routes
 app.use(express.json());
 app.get('/', (req, res) => {
     res.send('Appointy API is running...');

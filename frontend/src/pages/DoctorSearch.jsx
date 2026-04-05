@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, MapPin, Star, BadgeCheck, Clock, FileText, X, Calendar, CalendarDays, ChevronRight, Filter, Mail, Phone, Heart, RotateCcw } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../utils/api';
 import { toast } from 'react-hot-toast';
 const SPECIALTIES = ['All', 'Cardiologist', 'Dermatologist', 'Pediatrician', 'Neurologist', 'Orthopedic'];
 const SLOTS = ['09:00 AM', '10:00 AM', '11:00 AM', '01:00 PM', '02:30 PM', '04:00 PM'];
@@ -52,7 +52,7 @@ const DoctorSearch = () => {
     useEffect(() => {
         const fetchDoctors = async () => {
             try {
-                const { data } = await axios.get('http://localhost:5000/api/doctors');
+                const { data } = await api.get('/api/doctors');
                 // Map the DB schema to match the UI component's expected fields
                 const formattedDoctors = data.map(doc => {
                     const profilePhoto = (!doc.profilePhoto || doc.profilePhoto === 'null' || doc.profilePhoto === 'undefined')
@@ -113,7 +113,7 @@ const DoctorSearch = () => {
     const openViewProfileModal = async (doctor) => {
         setViewProfileDoctor({ ...doctor, allReviews: [], reviewSort: 'Latest' });
         try {
-            const { data } = await axios.get(`http://localhost:5000/api/doctors/${doctor.id}/reviews`);
+            const { data } = await api.get(`/api/doctors/${doctor.id}/reviews`);
             setViewProfileDoctor(prev => prev ? { ...prev, allReviews: data } : null);
         } catch (error) {
             console.error("Failed to fetch reviews", error);
@@ -122,7 +122,7 @@ const DoctorSearch = () => {
     const toggleLike = async (reviewId) => {
         try {
             const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-            const { data } = await axios.put(`http://localhost:5000/api/doctors/reviews/${reviewId}/like`, {}, config);
+            const { data } = await api.put(`/api/doctors/reviews/${reviewId}/like`, {}, config);
             setViewProfileDoctor(prev => {
                 if (!prev) return prev;
                 const updatedReviews = prev.allReviews.map(r =>
@@ -155,7 +155,7 @@ const DoctorSearch = () => {
                 date: new Date(selectedDate),
                 timeSlot: selectedSlot
             };
-            await axios.post('http://localhost:5000/api/appointments/book', bookingData, config);
+            await api.post('/api/appointments/book', bookingData, config);
             closeBookingModal();
             toast.success('Appointment request sent! You will be able to pay once the doctor accepts your request.');
             if (userInfo?.role === 'doctor') {

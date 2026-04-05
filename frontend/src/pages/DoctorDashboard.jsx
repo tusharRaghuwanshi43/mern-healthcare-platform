@@ -3,7 +3,7 @@ import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { useSelector, useDispatch } from 'react-redux';
 import { Navigate, Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../utils/api';
 import { logout, setCredentials } from '../redux/authSlice';
 import logo from '../assets/logo.png';
 import { Calendar, Clock, LogOut, Home, Users, Settings, Activity, Star, ClipboardList, Wallet, Camera, Edit3, ClipboardCheck, Mail, Phone, X, ChevronRight, MapPin, ShieldAlert, Search } from 'lucide-react';
@@ -34,10 +34,10 @@ const DoctorDashboard = () => {
     const fetchDashboardData = async () => {
         try {
             const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-            const aptRes = axios.get('http://localhost:5000/api/appointments/doctor', config);
-            const profRes = axios.get('http://localhost:5000/api/doctors/me', config);
-            const revRes = axios.get(`http://localhost:5000/api/doctors/${userInfo._id}/reviews`);
-            const bookedRes = axios.get('http://localhost:5000/api/appointments/myappointments', config);
+            const aptRes = api.get('/api/appointments/doctor', config);
+            const profRes = api.get('/api/doctors/me', config);
+            const revRes = api.get(`/api/doctors/${userInfo._id}/reviews`);
+            const bookedRes = api.get('/api/appointments/myappointments', config);
             const [appointmentsData, profileData, reviewsData, bookedData] = await Promise.all([aptRes, profRes, revRes, bookedRes]);
             setAppointments(appointmentsData.data);
             setDoctorProfile(profileData.data);
@@ -81,7 +81,7 @@ const DoctorDashboard = () => {
     const handleUpdateStatus = async (appointmentId, status) => {
         try {
             const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-            await axios.patch(`http://localhost:5000/api/appointments/${appointmentId}/status`, { status }, config);
+            await api.patch(`/api/appointments/${appointmentId}/status`, { status }, config);
             setAppointments(appointments.map(apt => apt._id === appointmentId ? { ...apt, status } : apt));
             fetchDashboardData(); // Refresh data after status update
         } catch (error) {
@@ -97,7 +97,7 @@ const DoctorDashboard = () => {
             const formData = new FormData();
             Object.keys(editForm).forEach(key => formData.append(key, editForm[key]));
             if (editPhoto) formData.append('profilePhoto', editPhoto);
-            const { data } = await axios.put('http://localhost:5000/api/doctors/me', formData, config);
+            const { data } = await api.put('/api/doctors/me', formData, config);
             setDoctorProfile(data);
             dispatch(setCredentials({ ...userInfo, ...data })); // Update user info in Redux store
             toast.success('Profile updated successfully!');
@@ -113,7 +113,7 @@ const DoctorDashboard = () => {
         try {
             setSubmittingPrescription(true);
             const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-            await axios.post(`http://localhost:5000/api/appointments/${prescriptionApt._id}/prescription`, prescriptionForm, config);
+            await api.post(`/api/appointments/${prescriptionApt._id}/prescription`, prescriptionForm, config);
             setAppointments(appointments.map(apt => apt._id === prescriptionApt._id ? { ...apt, status: 'completed' } : apt));
             toast.success('Prescription added successfully!');
             setIsPrescriptionModalOpen(false);
@@ -133,7 +133,7 @@ const DoctorDashboard = () => {
             const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
             // Note: The instruction had 'multipart/form-data' for availability, but JSON is more appropriate here.
             // Assuming the backend expects JSON for availability update.
-            await axios.put('http://localhost:5000/api/doctors/me', { availability: availabilityForm }, config);
+            await api.put('/api/doctors/me', { availability: availabilityForm }, config);
             setDoctorProfile(prev => ({ ...prev, availability: availabilityForm })); // Update local state
             setIsAvailabilityModalOpen(false);
             toast.success('Availability updated successfully!');
@@ -147,7 +147,7 @@ const DoctorDashboard = () => {
         if (window.confirm("Are you sure you want to permanently delete your Care Partner account? This action cannot be undone.")) {
             try {
                 const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-                await axios.delete('http://localhost:5000/api/doctors/me', config);
+                await api.delete('/api/doctors/me', config);
                 toast.success("Account deleted successfully.");
                 dispatch(logout());
                 navigate('/'); // Redirect to home or login page

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import axios from 'axios';
+import api from '../utils/api';
 import { setCredentials } from '../redux/authSlice';
 import { Lock, Mail, Activity, ArrowRight } from 'lucide-react';
 const DoctorLogin = () => {
@@ -17,7 +17,7 @@ const DoctorLogin = () => {
         setError('');
         setLoading(true);
         try {
-            const { data } = await axios.post('http://localhost:5000/api/doctors/signin', { email, password });
+            const { data } = await api.post('/api/doctors/signin', { email, password });
             dispatch(setCredentials(data));
             navigate('/doctor/dashboard');
         } catch (err) {

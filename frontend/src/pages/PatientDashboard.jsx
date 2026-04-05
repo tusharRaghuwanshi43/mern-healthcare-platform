@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../utils/api';
 import { toast } from 'react-hot-toast';
 import logo from '../assets/logo.png';
 import { Calendar, Clock, LogOut, Home, Search, History, Settings, Activity, User, Star, FileText, CreditCard, ShieldAlert, Phone, Mail } from 'lucide-react';
@@ -36,14 +36,14 @@ const PatientDashboard = () => {
         const fetchAppointments = async () => {
             try {
                 const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-                const { data } = await axios.get('http://localhost:5000/api/appointments/myappointments', config);
+                const { data } = await api.get('/api/appointments/myappointments', config);
                 setAppointments(data);
                 // Fetch recent prescriptions from completed appointments
                 const completed = data.filter(a => a.status === 'completed' && a.prescription);
                 const prescriptions = [];
                 for (const apt of completed.slice(0, 3)) {
                     try {
-                        const rxRes = await axios.get(`http://localhost:5000/api/appointments/${apt._id}/prescription`, config);
+                        const rxRes = await api.get(`/api/appointments/${apt._id}/prescription`, config);
                         prescriptions.push({ ...rxRes.data, appointmentId: apt._id, doctorInfo: apt.doctor });
                     } catch (e) { /* skip if not found */ }
                 }
@@ -58,7 +58,7 @@ const PatientDashboard = () => {
         const fetchUserProfile = async () => {
             try {
                 const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-                const { data } = await axios.get('http://localhost:5000/api/users/profile', config);
+                const { data } = await api.get('/api/users/profile', config);
                 setProfileForm({
                     name: data.name || '',
                     age: data.age || '',
@@ -88,7 +88,7 @@ const PatientDashboard = () => {
         try {
             setSubmittingReview(true);
             const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-            await axios.post(`http://localhost:5000/api/doctors/${reviewDoctor._id}/reviews`, reviewForm, config);
+            await api.post(`/api/doctors/${reviewDoctor._id}/reviews`, reviewForm, config);
             setReviewedDoctors(prev => [...prev, reviewDoctor._id]);
             toast.success('Review submitted successfully!');
             setIsReviewModalOpen(false);
@@ -105,7 +105,7 @@ const PatientDashboard = () => {
         try {
             setFetchingPrescription(true);
             const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-            const { data } = await axios.get(`http://localhost:5000/api/appointments/${appointmentId}/prescription`, config);
+            const { data } = await api.get(`/api/appointments/${appointmentId}/prescription`, config);
             setActivePrescription(data);
             setIsPrescriptionModalOpen(true);
         } catch (error) {
@@ -135,7 +135,7 @@ const PatientDashboard = () => {
                     Authorization: `Bearer ${userInfo.token}`
                 }
             };
-            const { data } = await axios.put('http://localhost:5000/api/users/profile', formData, config);
+            const { data } = await api.put('/api/users/profile', formData, config);
             dispatch(setCredentials({ ...userInfo, ...data })); // Sync with Redux
             toast.success('Profile updated successfully!'); // Replaced alert
             setIsProfileModalOpen(false);
@@ -151,7 +151,7 @@ const PatientDashboard = () => {
         if (window.confirm("Are you sure you want to permanently delete your account? This action cannot be undone.")) {
             try {
                 const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-                await axios.delete('http://localhost:5000/api/users/profile', config);
+                await api.delete('/api/users/profile', config);
                 toast.success("Account deleted successfully."); // Replaced alert
                 dispatch(logout());
                 navigate('/');

@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { FaCalendarAlt, FaClock, FaCheckCircle, FaUserMd } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-hot-toast';
-import axios from 'axios';
+import api from '../utils/api';
 
 const AppointmentBooking = () => {
     const { doctorId } = useParams();
@@ -22,7 +22,7 @@ const AppointmentBooking = () => {
     useEffect(() => {
         if (!doctorId) return;
         setLoadingDoctor(true);
-        axios.get(`http://localhost:5000/api/doctors/${doctorId}`)
+        api.get(`/api/doctors/${doctorId}`)
             .then(res => setDoctor(res.data))
             .catch(err => {
                 console.error('Failed to load doctor:', err);
@@ -91,7 +91,7 @@ const AppointmentBooking = () => {
                 timeSlot: selectedSlot,
                 consultationFee: doctor.consultationFee
             };
-            await axios.post('http://localhost:5000/api/appointments/book', appointmentData, config);
+            await api.post('/api/appointments/book', appointmentData, config);
             toast.success('Appointment request sent! Wait for doctor approval.');
             const dashboardPath = userInfo.role === 'doctor' ? '/doctor/dashboard' : '/patient/dashboard';
             navigate(dashboardPath);

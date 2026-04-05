@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import axios from 'axios';
+import api from '../utils/api';
 import { toast } from 'react-hot-toast';
 import { setCredentials } from '../redux/authSlice';
 import { User, Lock, Mail, Image as ImageIcon, Briefcase, DollarSign, Clock, ShieldCheck, FileText, MapPin } from 'lucide-react';
@@ -55,7 +55,7 @@ const DoctorSignup = () => {
         ];
         submitData.append('availability', JSON.stringify(defaultAvailability));
         try {
-            const { data } = await axios.post('http://localhost:5000/api/doctors/signup', submitData, {
+            const { data } = await api.post('/api/doctors/signup', submitData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             toast.success('Provider profile created! Please verify your email.');

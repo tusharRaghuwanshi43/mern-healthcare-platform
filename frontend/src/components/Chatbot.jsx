@@ -4,7 +4,7 @@ import { X, Send, ArrowRight, HeartPulse, Sparkles, Activity, Calendar, Clock, C
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-hot-toast';
-import axios from 'axios';
+import api from '../utils/api';
 import auraAvatar from '../assets/aura_avatar.png';
 
 // ─── Greeting detection ────────────────────────────────────────────────────────
@@ -56,7 +56,7 @@ const BookingWidget = ({ doctor, userInfo, onBooked }) => {
         setSubmitting(true);
         try {
             const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-            await axios.post('http://localhost:5000/api/appointments/book', {
+            await api.post('/api/appointments/book', {
                 doctorId: doctor._id,
                 date: selectedDate,
                 timeSlot: selectedSlot,
@@ -225,7 +225,7 @@ const Chatbot = () => {
 
         // ── Symptom analysis via AI ──
         try {
-            const { data } = await axios.post('http://localhost:5000/api/ai/analyze-symptoms', { query: trimmed });
+            const { data } = await api.post('/api/ai/analyze-symptoms', { query: trimmed });
             setMessages(prev => [...prev, {
                 id: Date.now() + 1,
                 type: 'bot',

@@ -4,7 +4,7 @@ import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-
 import { motion } from 'framer-motion';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
+import api from '../utils/api';
 import { ShieldCheck, CreditCard, CheckCircle2, AlertCircle } from 'lucide-react';
 // Public Stripe key for test mode
 const stripePromise = loadStripe('pk_test_51SDVBPJFeSEk5i38YfMBBQeK4SuNBL4xRz4Cs4Dr8CXuawWGhTJ4eJGgEqyOuqrMEIcQykKhpVYSBjNOYOmj9NE000Nf8Sopqg');
@@ -79,7 +79,7 @@ const PaymentGateway = () => {
         const createPaymentIntent = async () => {
             if (!userInfo) return;
             try {
-                const { data } = await axios.post('http://localhost:5000/api/payments/create-intent', {
+                const { data } = await api.post('/api/payments/create-intent', {
                     amount: paymentData.amount
                 }, {
                     headers: {
@@ -96,7 +96,7 @@ const PaymentGateway = () => {
     const handlePaymentSuccess = async (paymentId) => {
         if (paymentData.appointmentId && userInfo?.token) {
             try {
-                await axios.patch(`http://localhost:5000/api/appointments/${paymentData.appointmentId}/pay`, {}, {
+                await api.patch(`/api/appointments/${paymentData.appointmentId}/pay`, {}, {
                     headers: { Authorization: `Bearer ${userInfo.token}` }
                 });
             } catch (error) {

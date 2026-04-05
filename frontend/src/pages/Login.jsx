@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { GoogleLogin } from '@react-oauth/google';
-import axios from 'axios';
+import api from '../utils/api';
 import { toast } from 'react-hot-toast';
 import logo from '../assets/logo.png';
 import { setCredentials } from '../redux/authSlice';
@@ -29,8 +29,8 @@ const Login = () => {
 
         setLoading(true);
         try {
-            const url = activeTab === 'doctor' ? 'http://localhost:5000/api/doctors/signin' : 'http://localhost:5000/api/auth/login';
-            const { data } = await axios.post(url, { email, password });
+            const url = activeTab === 'doctor' ? '/api/doctors/signin' : '/api/auth/login';
+            const { data } = await api.post(url, { email, password });
             dispatch(setCredentials(data));
             if (data.role === 'doctor') navigate('/doctor/dashboard');
             else if (data.role === 'admin') navigate('/admin/dashboard');
@@ -49,7 +49,7 @@ const Login = () => {
             return;
         }
         try {
-            const { data } = await axios.post('http://localhost:5000/api/auth/google', {
+            const { data } = await api.post('/api/auth/google', {
                 idToken: credentialResponse.credential,
                 role: 'patient'
             });

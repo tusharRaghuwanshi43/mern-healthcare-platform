@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { GoogleLogin } from '@react-oauth/google';
-import axios from 'axios';
+import api from '../utils/api';
 import { toast } from 'react-hot-toast';
 import logo from '../assets/logo.png';
 import { setCredentials } from '../redux/authSlice';
@@ -52,7 +52,7 @@ const Signup = () => {
             if (medicalNotes) formData.append('medicalNotes', medicalNotes);
             if (profilePhoto) formData.append('profilePhoto', profilePhoto);
             const config = { headers: { 'Content-Type': 'multipart/form-data' } };
-            const { data } = await axios.post('http://localhost:5000/api/auth/register', formData, config);
+            const { data } = await api.post('/api/auth/register', formData, config);
 
             toast.success('Account created! Please verify your email.');
             setSignupSuccess(true);
@@ -66,7 +66,7 @@ const Signup = () => {
     };
     const handleGoogleSuccess = async (credentialResponse) => {
         try {
-            const { data } = await axios.post('http://localhost:5000/api/auth/google', {
+            const { data } = await api.post('/api/auth/google', {
                 idToken: credentialResponse.credential,
                 role: 'patient'
             });
