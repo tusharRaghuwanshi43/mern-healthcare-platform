@@ -20,7 +20,7 @@ const corsOptions = {
     allowedHeaders: ['Content-Type', 'Authorization'],
 };
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // Handle preflight for all routes
+app.options('/*', cors(corsOptions)); // Handle preflight for all routes
 app.use(express.json());
 app.get('/', (req, res) => {
     res.send('Appointy API is running...');
