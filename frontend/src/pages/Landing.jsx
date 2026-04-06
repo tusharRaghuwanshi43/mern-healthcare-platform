@@ -53,7 +53,7 @@ const Landing = () => {
             <section className="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
                 <div className="text-center mb-16">
                     <span className="text-primary-600 dark:text-primary-400 font-bold uppercase tracking-widest text-sm block mb-3">How It Works</span>
-                    <h2 className="text-4xl md:text-5xl font-black text-slate-800 dark:text-white leading-tight">Book in 3 Simple Steps</h2>
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 dark:text-white leading-tight">Book in 3 Simple Steps</h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                     {[
@@ -94,7 +94,7 @@ const Landing = () => {
                     <div className="space-y-8">
                         <div>
                             <span className="text-primary-600 dark:text-primary-400 font-bold uppercase tracking-widest text-sm block mb-3">About The Platform</span>
-                            <h2 className="text-4xl md:text-5xl font-black text-slate-800 dark:text-white leading-tight">Bridging The Gap Between Care Partners & Patients</h2>
+                            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 dark:text-white leading-tight break-words">Bridging The Gap Between Care Partners & Patients</h2>
                         </div>
                         <p className="text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
                             Appointy isn't just a booking engine; it's a complete clinical workspace. For patients, it provides immediate access to thousands of verified Care Partners. For providers, it automates scheduling, digital prescriptions, and payout gateways so they focus entirely on care.
@@ -128,7 +128,7 @@ const Landing = () => {
                     <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
                         <div className="max-w-2xl">
                             <span className="text-primary-600 dark:text-primary-400 font-bold uppercase tracking-widest text-sm block mb-3">Our Network</span>
-                            <h2 className="text-4xl font-black text-slate-800 dark:text-white leading-tight">Meet Our Top Rated Care Partners</h2>
+                            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 dark:text-white leading-tight break-words">Meet Our Top Rated Care Partners</h2>
                         </div>
                         <Link to="/signup" className="bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-3 px-8 rounded-full border border-slate-200 dark:border-slate-700 transition-colors">
                             View All Partners
@@ -136,9 +136,9 @@ const Landing = () => {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {topDoctors.length > 0 ? topDoctors.map((doc, idx) => (
-                            <motion.div key={doc._id || idx} whileHover={{ y: -8 }} className="bg-slate-50 dark:bg-slate-800 rounded-[2rem] p-8 border border-slate-100 dark:border-slate-700 shadow-sm transition-all group cursor-pointer relative overflow-hidden">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-primary-100 dark:bg-primary-900/30 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
-                                <img src={doc.profilePhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(doc.name)}&background=c084fc&color=fff&size=150`} alt={doc.name} className="w-24 h-24 rounded-full object-cover border-4 border-white dark:border-slate-700 shadow-md mb-6" />
+                            <motion.div key={doc._id || idx} whileHover={{ y: -8 }} className="bg-slate-50 dark:bg-slate-800 rounded-[2rem] p-6 sm:p-8 border border-slate-100 dark:border-slate-700 shadow-sm transition-all group cursor-pointer relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-28 h-28 sm:w-32 sm:h-32 bg-primary-100 dark:bg-primary-900/30 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+                                <img src={doc.profilePhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(doc.name)}&background=c084fc&color=fff&size=150`} alt={doc.name} className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-white dark:border-slate-700 shadow-md mb-6" />
                                 <h3 className="text-xl font-bold text-slate-800 dark:text-white">{doc.name}</h3>
                                 <p className="text-primary-600 dark:text-primary-400 font-bold text-sm mb-2">{doc.specialty}</p>
                                 <div className="flex flex-wrap gap-2 mb-4">
@@ -159,8 +159,8 @@ const Landing = () => {
                         )) : (
                             // Skeleton placeholders while loading
                             [1, 2, 3].map(i => (
-                                <div key={i} className="bg-slate-50 rounded-[2rem] p-8 border border-slate-100 animate-pulse">
-                                    <div className="w-24 h-24 rounded-full bg-slate-200 mb-6"></div>
+                                <div key={i} className="bg-slate-50 rounded-[2rem] p-6 sm:p-8 border border-slate-100 animate-pulse">
+                                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-slate-200 mb-6"></div>
                                     <div className="w-3/4 h-5 bg-slate-200 rounded-full mb-3"></div>
                                     <div className="w-1/2 h-4 bg-slate-100 rounded-full mb-6"></div>
                                     <div className="w-full h-10 bg-slate-100 rounded-full"></div>
@@ -177,7 +177,7 @@ const Landing = () => {
                 <div className="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col lg:flex-row gap-16 relative z-10 items-center">
                     <div className="w-full lg:w-1/2 text-white pb-6 lg:pb-0 pr-0 lg:pr-10">
                         <span className="text-primary-400 font-bold uppercase tracking-widest text-sm mb-4 block">The Ecosystem</span>
-                        <h2 className="text-4xl md:text-5xl font-black mb-6 leading-tight uppercase tracking-tighter">THE ULTIMATE CARE ECOSYSTEM.</h2>
+                        <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-6 leading-tight uppercase tracking-tighter break-words">THE ULTIMATE CARE ECOSYSTEM.</h2>
                         <div className="relative mb-10 rounded-3xl overflow-hidden border-2 border-slate-700/50 shadow-2xl group">
                             <img src={femaleSpecialist} alt="Specialized Care" className="w-full h-64 object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" />
                             <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-transparent to-transparent"></div>

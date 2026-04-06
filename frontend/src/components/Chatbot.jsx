@@ -258,7 +258,7 @@ const Chatbot = () => {
     const suggestedSymptoms = ["🌡️ Fever & chills", "😫 Persistent headache", "🤕 Joint pain", "🫀 Chest tightness"];
 
     return (
-        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+        <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end">
 
             {/* ─── CHAT WINDOW ─────────────────────────────────────────────── */}
             <AnimatePresence>
@@ -268,7 +268,7 @@ const Chatbot = () => {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
                         transition={{ duration: 0.3, ease: 'easeOut' }}
-                        className="mb-6 w-[380px] sm:w-[420px] h-[680px] max-h-[80vh] bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.18)] border border-slate-100 flex flex-col overflow-hidden"
+                        className="mb-4 sm:mb-6 w-[calc(100vw-2rem)] sm:w-[420px] h-[680px] max-h-[80vh] bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.18)] border border-slate-100 flex flex-col overflow-hidden"
                     >
                         {/* ── Header ──────────────────────────────────────────────── */}
                         <div className="px-5 py-4 flex items-center justify-between text-white relative overflow-hidden bg-slate-900 flex-shrink-0">
