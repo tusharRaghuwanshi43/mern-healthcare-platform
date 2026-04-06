@@ -25,6 +25,7 @@ const DoctorSearch = () => {
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedSlot, setSelectedSlot] = useState('');
     const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
+    const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
     // Generate rolling 7-day view
     const getUpcomingDays = () => {
         const days = [];
@@ -175,8 +176,11 @@ const DoctorSearch = () => {
             <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary-200 dark:bg-primary-900 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -z-10 animate-pulse"></div>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8 relative z-10">
                 {/* --- Sidebar Filters --- */}
-                <aside className="w-full lg:w-1/3 xl:w-1/4">
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800 p-4 sticky top-28">
+                {isMobileFilterOpen && (
+                    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[55] lg:hidden" onClick={() => setIsMobileFilterOpen(false)} />
+                )}
+                <aside className={`fixed inset-x-0 bottom-0 z-[60] bg-white dark:bg-slate-900 rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] transition-transform duration-300 transform p-6 max-h-[85vh] overflow-y-auto ${isMobileFilterOpen ? 'translate-y-0' : 'translate-y-full'} lg:static lg:translate-y-0 lg:w-1/3 xl:w-1/4 lg:bg-transparent lg:shadow-none lg:rounded-none lg:p-0 lg:max-h-none lg:overflow-visible`}>
+                    <div className="bg-white dark:bg-slate-900 lg:rounded-2xl lg:shadow-lg lg:border border-slate-100 dark:border-slate-800 lg:p-4 lg:sticky lg:top-28">
                         {/* Header */}
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-3xl font-black text-slate-800 dark:text-white flex items-center gap-2">
@@ -265,15 +269,27 @@ const DoctorSearch = () => {
                                 <span className="font-extrabold tracking-wide text-sm">4.0+ Stars</span>
                             </button>
                         </div>
-                        {/* Reset All */}
-                        <button onClick={resetAllFilters} className="w-full py-2.5 px-3 rounded-xl border-2 border-dashed border-slate-300 text-slate-500 hover:text-red-600 hover:border-red-300 hover:bg-red-50 font-extrabold text-sm transition-all flex items-center justify-center gap-2">
-                            <RotateCcw className="w-4 h-4" />
-                            Reset All Filters
-                        </button>
+                        {/* Reset All & Mobile Apply */}
+                        <div className="flex flex-col gap-3">
+                            <button onClick={resetAllFilters} className="w-full py-2.5 px-3 rounded-xl border-2 border-dashed border-slate-300 text-slate-500 hover:text-red-600 hover:border-red-300 hover:bg-red-50 font-extrabold text-sm transition-all flex items-center justify-center gap-2">
+                                <RotateCcw className="w-4 h-4" />
+                                Reset All Filters
+                            </button>
+                            <button onClick={() => setIsMobileFilterOpen(false)} className="lg:hidden w-full py-3 px-3 rounded-xl bg-primary-600 text-white font-extrabold text-sm shadow-md flex items-center justify-center">
+                                Apply Filters
+                            </button>
+                        </div>
                     </div>
                 </aside>
                 {/* --- Main Content (Feed) --- */}
                 <main className="w-full lg:w-3/4">
+                    <button 
+                        onClick={() => setIsMobileFilterOpen(true)}
+                        className="lg:hidden w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 mb-6 border border-slate-200 transition-colors shadow-sm"
+                    >
+                        <Filter className="w-5 h-5" />
+                        Refine Search (Filters)
+                    </button>
                     {/* Search Bar */}
                     <div className="bg-white dark:bg-slate-900 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-800 p-2.5 mb-8 flex items-center focus-within:ring-4 focus-within:ring-primary-100 dark:focus-within:ring-primary-900/30 focus-within:border-primary-400 dark:focus-within:border-primary-600 transition-all">
                         <div className="pl-5 pr-3 text-primary-500">
@@ -434,7 +450,7 @@ const DoctorSearch = () => {
                                     <h3 className="font-bold text-slate-400 mb-4 text-xs uppercase tracking-widest flex items-center gap-2">
                                         <Clock className="w-4 h-4 text-primary-500" /> Select Time
                                     </h3>
-                                    <div className="grid grid-cols-3 gap-3">
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                                         {(() => {
                                             if (!selectedDate) {
                                                 return <div className="col-span-3 text-sm font-bold text-slate-400 bg-slate-50 p-3 rounded-xl text-center border border-dashed border-slate-200">Please select a date first</div>;

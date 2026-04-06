@@ -318,8 +318,8 @@ const PatientDashboard = () => {
                 </button>
             </div>
             {/* Main Content Area */}
-            <div className="flex-1 overflow-y-auto pt-16 md:pt-0 pb-10">
-                <div className="max-w-6xl mx-auto p-6 lg:p-8">
+            <div className="flex-1 max-h-screen overflow-y-auto pt-16 md:pt-0 pb-20 md:pb-10 bg-slate-50 relative">
+                <div className="max-w-6xl mx-auto p-4 md:p-6 lg:p-8">
 
                     {/* Dashboard Header */}
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 mt-4 md:mt-0">
@@ -515,7 +515,7 @@ const PatientDashboard = () => {
             {isReviewModalOpen && reviewDoctor && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setIsReviewModalOpen(false)} />
-                    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white rounded-[2rem] shadow-2xl w-full max-w-md relative z-10 p-8 border border-white">
+                    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white rounded-[2rem] shadow-2xl w-full max-w-md relative z-10 p-6 md:p-8 max-h-[90vh] overflow-y-auto border border-white hide-scrollbar">
                         <div className="text-center mb-6">
                             <div className="w-16 h-16 rounded-full mx-auto mb-3 shadow-md border-4 border-slate-50 overflow-hidden">
                                 <img src={reviewDoctor.profilePhoto || 'https://via.placeholder.com/150'} alt="Doc" className="w-full h-full object-cover" />
@@ -549,7 +549,7 @@ const PatientDashboard = () => {
             {isPrescriptionModalOpen && activePrescription && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setIsPrescriptionModalOpen(false)} />
-                    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white rounded-[2rem] shadow-2xl w-full max-w-2xl relative z-10 p-8 max-h-[90vh] overflow-y-auto border border-white hide-scrollbar">
+                    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white rounded-[2rem] shadow-2xl w-full max-w-2xl relative z-10 p-6 md:p-8 max-h-[90vh] overflow-y-auto border border-white hide-scrollbar">
 
                         <div className="flex items-center space-x-3 mb-6 bg-indigo-50 p-4 rounded-2xl border border-indigo-100">
                             <div className="w-12 h-12 bg-indigo-500 text-white rounded-xl flex items-center justify-center text-xl font-bold shadow-md">Rx</div>
@@ -611,7 +611,7 @@ const PatientDashboard = () => {
             {isProfileModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setIsProfileModalOpen(false)} />
-                    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white rounded-[2rem] shadow-2xl w-full max-w-2xl relative z-10 p-8 max-h-[90vh] overflow-y-auto border border-white hide-scrollbar">
+                    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white rounded-[2rem] shadow-2xl w-full max-w-2xl relative z-10 p-6 md:p-8 max-h-[90vh] overflow-y-auto border border-white hide-scrollbar">
                         <div className="flex items-center space-x-3 mb-8">
                             <div className="w-12 h-12 bg-primary-100 text-primary-600 rounded-xl flex items-center justify-center font-bold shadow-sm"><User className="w-6 h-6" /></div>
                             <div>
@@ -683,6 +683,38 @@ const PatientDashboard = () => {
                     </motion.div>
                 </div>
             )}
+            {/* Mobile Bottom Navigation */}
+            <div className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-slate-100 flex justify-around items-center p-3 z-50 pb-safe">
+                <button
+                    onClick={() => { setActiveTab('overview'); window.scrollTo(0,0); }}
+                    className={`flex flex-col items-center space-y-1 ${activeTab === 'overview' ? 'text-primary-600' : 'text-slate-400 hover:text-slate-600'}`}
+                >
+                    <Home className="w-6 h-6" />
+                    <span className="text-[10px] font-bold">Home</span>
+                </button>
+                <button
+                    onClick={() => { setActiveTab('history'); window.scrollTo(0,0); }}
+                    className={`flex flex-col items-center space-y-1 ${activeTab === 'history' ? 'text-primary-600' : 'text-slate-400 hover:text-slate-600'}`}
+                >
+                    <History className="w-6 h-6" />
+                    <span className="text-[10px] font-bold">History</span>
+                </button>
+                <Link
+                    to="/doctors"
+                    className="flex flex-col items-center space-y-1 text-slate-400 hover:text-slate-600"
+                >
+                    <Search className="w-6 h-6" />
+                    <span className="text-[10px] font-bold">Search</span>
+                </Link>
+                <button
+                    onClick={() => { setActiveTab('settings'); window.scrollTo(0,0); }}
+                    className={`flex flex-col items-center space-y-1 ${activeTab === 'settings' ? 'text-primary-600' : 'text-slate-400 hover:text-slate-600'}`}
+                >
+                    <Settings className="w-6 h-6" />
+                    <span className="text-[10px] font-bold">Settings</span>
+                </button>
+            </div>
+            {/* End of mobile bottom nav */}
         </div>
     );
 };

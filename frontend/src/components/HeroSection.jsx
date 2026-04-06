@@ -172,7 +172,7 @@ const HeroSection = ({ onWatchDemo }) => {
                     </div>
                     {/* Headline */}
                     <div ref={headlineRef}>
-                        <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-[1.0] tracking-tight">
+                        <h1 className="text-4xl md:text-5xl lg:text-7xl xl:text-8xl font-black leading-[1.0] tracking-tight">
                             <span className="block text-white">HEALTHCARE</span>
                             <span
                                 className="block min-h-[1.1em]"

@@ -83,7 +83,7 @@ const Landing = () => {
                                 <p className="text-slate-100/90 font-medium text-lg leading-relaxed max-w-[280px]">Direct access to top-tier care partners vetted for your safety.</p>
                             </div>
                         </div>
-                        <div className="absolute -bottom-8 -right-8 md:bottom-36 md:-right-10 bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-xl border border-slate-100 dark:border-slate-700 transform hover:scale-105 transition-transform">
+                        <div className="absolute -bottom-8 right-2 md:bottom-16 md:-right-10 bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-xl border border-slate-100 dark:border-slate-700 transform hover:scale-105 transition-transform z-20">
                             <div className="flex items-center gap-4 mb-2">
                                 <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center"><Microscope className="w-6 h-6" /></div>
                                 <h4 className="text-3xl font-black text-slate-800 dark:text-white">100%</h4>
