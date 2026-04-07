@@ -14,7 +14,7 @@ const app = express();
 // CORS configuration
 const corsOptions = {
     origin: [
-        'https://appointy-healthcare.netlify.app',
+        'https://mern-healthcare-platform.onrender.com/',
         'http://localhost:5173',
         'http://localhost:3000'
     ],
