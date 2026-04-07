@@ -3,28 +3,15 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./src/config/db');
 
-// Load env variables FIRST
+// Load environment variables
 dotenv.config();
+
+// Connect to database ONCE (Render is not serverless)
+connectDB();
 
 const app = express();
 
-// 🔁 Handle DB connection safely for serverless
-let isConnected = false;
-const connectDatabase = async () => {
-    if (!isConnected) {
-        await connectDB();
-        isConnected = true;
-        console.log("MongoDB connected");
-    }
-};
-
-// Middleware to ensure DB is connected before handling requests
-app.use(async (req, res, next) => {
-    await connectDatabase();
-    next();
-});
-
-// CORS config
+// CORS configuration
 const corsOptions = {
     origin: [
         'https://appointy-healthcare.netlify.app',
@@ -39,11 +26,12 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-// Routes
+// Test route
 app.get('/', (req, res) => {
     res.send('Appointy API is running...');
 });
 
+// Routes
 app.use('/api/auth', require('./src/routes/authRoutes'));
 app.use('/api/users', require('./src/routes/userRoutes'));
 app.use('/api/payments', require('./src/routes/paymentRoutes'));
@@ -51,13 +39,9 @@ app.use('/api/doctors', require('./src/routes/doctorRoutes'));
 app.use('/api/appointments', require('./src/routes/appointmentRoutes'));
 app.use('/api/ai', require('./src/routes/aiRoutes'));
 
-// ✅ LOCAL ONLY: run server
-if (process.env.NODE_ENV !== 'production') {
-    const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
-    });
-}
+// Start server (REQUIRED for Render)
+const PORT = process.env.PORT || 5000;
 
-// ❗ IMPORTANT: DO NOT use app.listen() in Vercel
-module.exports = app;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
