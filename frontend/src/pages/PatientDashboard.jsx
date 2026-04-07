@@ -262,7 +262,7 @@ const PatientDashboard = () => {
                                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-700`}
                             >
                                 <Search className="w-5 h-5" />
-                                <span>Find Doctors</span>
+                                <span>Find Care Partners</span>
                             </Link>
                             <button
                                 onClick={() => setActiveTab('history')}
@@ -408,7 +408,7 @@ const PatientDashboard = () => {
                                                     <div className="flex items-center gap-3 mb-2">
                                                         <div className="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center text-xs font-bold">Rx</div>
                                                         <div className="flex-1 min-w-0">
-                                                            <p className="font-bold text-slate-800 text-sm truncate">Dr. {rx.doctorInfo?.name || rx.doctor?.name}</p>
+                                                            <p className="font-bold text-slate-800 text-sm truncate">{rx.doctorInfo?.name || rx.doctor?.name}</p>
                                                             <p className="text-xs text-slate-500">{new Date(rx.createdAt).toLocaleDateString()}</p>
                                                         </div>
                                                     </div>
@@ -561,7 +561,7 @@ const PatientDashboard = () => {
                         <div className="grid grid-cols-2 gap-4 mb-8">
                             <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
                                 <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Doctor</p>
-                                <p className="font-bold text-slate-800 text-lg">Dr. {activePrescription.doctor?.name || activePrescription.doctorInfo?.name}</p>
+                                <p className="font-bold text-slate-800 text-lg">{activePrescription.doctor?.name || activePrescription.doctorInfo?.name}</p>
                                 <p className="text-sm font-medium text-primary-600">{activePrescription.doctor?.specialty || activePrescription.doctorInfo?.specialty}</p>
                             </div>
                             <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">

@@ -213,11 +213,11 @@ const DoctorDashboard = () => {
                             </button>
                             <button onClick={() => setActiveTab('careHistory')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all font-bold ${activeTab === 'careHistory' ? 'bg-primary-50 text-primary-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'}`}>
                                 <ClipboardList className="w-5 h-5" />
-                                <span>Care Partner History</span>
+                                <span>Health Record</span>
                             </button>
                             <Link to="/doctors" className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-700`}>
                                 <Search className="w-5 h-5" />
-                                <span>Book Care Partner</span>
+                                <span>Find Care Partners</span>
                             </Link>
                             <button onClick={() => setIsAvailabilityModalOpen(true)} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all font-bold text-slate-500 hover:bg-slate-50 hover:text-slate-700`}>
                                 <Clock className="w-5 h-5" />
