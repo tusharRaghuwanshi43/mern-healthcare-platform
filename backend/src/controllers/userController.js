@@ -1,4 +1,7 @@
 const User = require('../models/User');
+const Appointment = require('../models/Appointment');
+const Review = require('../models/Review');
+const Prescription = require('../models/Prescription');
 // @desc    Get logged in user profile
 // @route   GET /api/users/profile
 // @access  Private
@@ -74,13 +77,19 @@ const updateUserProfile = async (req, res) => {
 // @access  Private
 const deleteUserProfile = async (req, res) => {
     try {
-        const user = await User.findByIdAndDelete(req.user._id);
-        if (user) {
-            res.json({ message: 'User account deleted successfully' });
-        } else {
-            res.status(404).json({ message: 'User not found' });
-        }
+        const userId = req.user._id;
+        
+        // Cascade delete all data related to this user
+        await Promise.all([
+            Appointment.deleteMany({ patient: userId }),
+            Review.deleteMany({ patient: userId }),
+            Prescription.deleteMany({ patient: userId }),
+            User.findByIdAndDelete(userId)
+        ]);
+
+        res.json({ message: 'User account and all related data deleted successfully' });
     } catch (error) {
+        console.error("Account Deletion Error:", error);
         res.status(500).json({ message: error.message });
     }
 };

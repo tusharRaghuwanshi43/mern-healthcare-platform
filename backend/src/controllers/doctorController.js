@@ -1,4 +1,7 @@
 const Doctor = require('../models/Doctor');
+const Appointment = require('../models/Appointment');
+const Review = require('../models/Review');
+const Prescription = require('../models/Prescription');
 const generateToken = require('../utils/generateToken');
 const jwt = require('jsonwebtoken');
 const sendEmail = require('../utils/sendEmail');
@@ -343,12 +346,17 @@ const likeReview = async (req, res) => {
 // @access  Private/Doctor
 const deleteDoctorProfile = async (req, res) => {
     try {
-        const doctor = await Doctor.findByIdAndDelete(req.user._id);
-        if (doctor) {
-            res.json({ message: 'Doctor account deleted successfully' });
-        } else {
-            res.status(404).json({ message: 'Doctor not found' });
-        }
+        const doctorId = req.user._id;
+
+        // Cascade delete all data related to this doctor
+        await Promise.all([
+            Appointment.deleteMany({ doctor: doctorId }),
+            Review.deleteMany({ doctor: doctorId }),
+            Prescription.deleteMany({ doctor: doctorId }),
+            Doctor.findByIdAndDelete(doctorId)
+        ]);
+
+        res.json({ message: 'Doctor account and all related data deleted successfully' });
     } catch (error) {
         console.error("Delete Doctor Profile Error:", error);
         res.status(500).json({ message: 'Server error deleting profile' });
