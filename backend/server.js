@@ -15,6 +15,7 @@ const app = express();
 const corsOptions = {
     origin: [
         'https://appointy-healthcare.netlify.app',
+        'https://appointy-healthcare-platform.vercel.app',
         'http://localhost:5173',
         'http://localhost:3000'
     ],
