@@ -46,7 +46,7 @@ const Landing = () => {
         return <Navigate to="/patient/dashboard" replace />;
     }
     return (
-        <div className="w-full bg-slate-50 dark:bg-slate-950 font-sans overflow-x-hidden transition-colors duration-300">
+        <div className="w-full bg-white font-sans overflow-x-hidden transition-colors duration-300">
             {/* HERO SECTION */}
             <HeroSection onWatchDemo={() => setShowDemo(true)} />
             {/* HOW IT WORKS */}
@@ -62,7 +62,7 @@ const Landing = () => {
                         { step: '03', icon: <CreditCard className="w-8 h-8" />, title: 'Pay & Consult', desc: 'Once confirmed, pay securely via Stripe. Get digital prescriptions and manage everything in your dashboard.' }
                     ].map((item, idx) => (
                         <motion.div key={idx} whileHover={{ y: -6 }} className="relative bg-white dark:bg-slate-900 rounded-[2rem] p-8 border border-slate-100 dark:border-slate-800 shadow-sm text-center group">
-                            <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 bg-primary-600 text-white rounded-full flex items-center justify-center font-extrabold text-sm shadow-lg shadow-primary-500/30">{item.step}</div>
+                            <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 bg-blue-700 text-white rounded-full flex items-center justify-center font-extrabold text-sm shadow-lg shadow-blue-700/30">{item.step}</div>
                             <div className="w-16 h-16 mx-auto bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 rounded-2xl flex items-center justify-center mb-6 mt-4 group-hover:bg-primary-100 dark:group-hover:bg-primary-900/50 transition-colors">{item.icon}</div>
                             <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-3">{item.title}</h3>
                             <p className="text-slate-500 dark:text-slate-400 font-medium leading-relaxed">{item.desc}</p>
@@ -122,67 +122,19 @@ const Landing = () => {
                     </div>
                 </div>
             </section>
-            {/* DOCTORS SHOWCASE – DYNAMIC */}
-            <section id="doctors" className="bg-white dark:bg-slate-900 border-y border-slate-100 dark:border-slate-800 py-16 lg:py-20">
-                <div className="max-w-7xl mx-auto px-6 lg:px-8">
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-                        <div className="max-w-2xl">
-                            <span className="text-primary-600 dark:text-primary-400 font-bold uppercase tracking-widest text-sm block mb-3">Our Network</span>
-                            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-800 dark:text-white leading-tight break-words">Meet Our Top Rated Care Partners</h2>
-                        </div>
-                        <Link to="/signup" className="bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-3 px-8 rounded-full border border-slate-200 dark:border-slate-700 transition-colors">
-                            View All Partners
-                        </Link>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {topDoctors.length > 0 ? topDoctors.map((doc, idx) => (
-                            <motion.div key={doc._id || idx} whileHover={{ y: -8 }} className="bg-slate-50 dark:bg-slate-800 rounded-[2rem] p-6 sm:p-8 border border-slate-100 dark:border-slate-700 shadow-sm transition-all group cursor-pointer relative overflow-hidden">
-                                <div className="absolute top-0 right-0 w-28 h-28 sm:w-32 sm:h-32 bg-primary-100 dark:bg-primary-900/30 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
-                                <img src={doc.profilePhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(doc.name)}&background=c084fc&color=fff&size=150`} alt={doc.name} className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-white dark:border-slate-700 shadow-md mb-6" />
-                                <h3 className="text-xl font-bold text-slate-800 dark:text-white">{doc.name}</h3>
-                                <p className="text-primary-600 dark:text-primary-400 font-bold text-sm mb-2">{doc.specialty}</p>
-                                <div className="flex flex-wrap gap-2 mb-4">
-                                    <span className="text-xs font-bold bg-blue-50 text-blue-600 px-2 py-1 rounded-lg border border-blue-100">{doc.experienceYears || 0} Yrs Exp</span>
-                                    <span className="text-xs font-bold bg-green-50 text-green-600 px-2 py-1 rounded-lg border border-green-100">${doc.consultationFee || 0}/visit</span>
-                                </div>
-                                <div className="flex items-center justify-between pt-6 border-t border-white dark:border-slate-600">
-                                    <div className="flex items-center gap-1.5 bg-white dark:bg-slate-700 px-3 py-1.5 rounded-full shadow-sm border border-slate-100 dark:border-slate-600">
-                                        <Star className="w-4 h-4 fill-amber-400 text-amber-500" />
-                                        <span className="font-bold text-slate-700 dark:text-slate-200">{doc.averageRating || 0}</span>
-                                        <span className="text-xs text-slate-400">{doc.totalReviews || 0}</span>
-                                    </div>
-                                    <Link to="/signup" className="text-primary-600 dark:text-primary-400 group-hover:bg-primary-600 group-hover:text-white w-10 h-10 rounded-full flex items-center justify-center transition-colors bg-white dark:bg-slate-700 shadow-sm">
-                                        <ArrowRight className="w-5 h-5" />
-                                    </Link>
-                                </div>
-                            </motion.div>
-                        )) : (
-                            // Skeleton placeholders while loading
-                            [1, 2, 3].map(i => (
-                                <div key={i} className="bg-slate-50 rounded-[2rem] p-6 sm:p-8 border border-slate-100 animate-pulse">
-                                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-slate-200 mb-6"></div>
-                                    <div className="w-3/4 h-5 bg-slate-200 rounded-full mb-3"></div>
-                                    <div className="w-1/2 h-4 bg-slate-100 rounded-full mb-6"></div>
-                                    <div className="w-full h-10 bg-slate-100 rounded-full"></div>
-                                </div>
-                            ))
-                        )}
-                    </div>
-                </div>
-            </section>
             {/* EXTENDED FEATURES GRID */}
             <div className="w-full bg-slate-900 py-16 lg:py-20 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-600 rounded-full mix-blend-screen filter blur-[120px] opacity-20"></div>
-                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-600 rounded-full mix-blend-screen filter blur-[120px] opacity-20"></div>
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600 rounded-full mix-blend-screen filter blur-[120px] opacity-15"></div>
+                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-teal-500 rounded-full mix-blend-screen filter blur-[120px] opacity-15"></div>
                 <div className="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col lg:flex-row gap-16 relative z-10 items-center">
                     <div className="w-full lg:w-1/2 text-white pb-6 lg:pb-0 pr-0 lg:pr-10">
-                        <span className="text-primary-400 font-bold uppercase tracking-widest text-sm mb-4 block">The Ecosystem</span>
+                        <span className="text-blue-400 font-bold uppercase tracking-widest text-sm mb-4 block">The Ecosystem</span>
                         <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-6 leading-tight uppercase tracking-tighter break-words">THE ULTIMATE CARE ECOSYSTEM.</h2>
                         <div className="relative mb-10 rounded-3xl overflow-hidden border-2 border-slate-700/50 shadow-2xl group">
                             <img src={femaleSpecialist} alt="Specialized Care" className="w-full h-64 object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" />
                             <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-transparent to-transparent"></div>
                             <div className="absolute bottom-6 left-8">
-                                <p className="text-primary-400 font-bold text-sm tracking-widest">GLOBAL STANDARDS</p>
+                                <p className="text-blue-400 font-bold text-sm tracking-widest">GLOBAL STANDARDS</p>
                                 <h4 className="text-white font-black text-xl tracking-tight">Specialized Medical Insights</h4>
                             </div>
                         </div>

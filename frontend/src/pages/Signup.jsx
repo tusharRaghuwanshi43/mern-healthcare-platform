@@ -78,10 +78,10 @@ const Signup = () => {
     };
     return (
         <div className="flex-grow flex items-center justify-center py-10 px-4 relative w-full h-full min-h-screen bg-slate-50 overflow-hidden">
-            {/* Vibrant Background Elements */}
-            <div className="absolute top-[-10%] right-[-10%] w-96 h-96 bg-primary-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-            <div className="absolute top-[20%] left-[-10%] w-96 h-96 bg-secondary-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-            <div className="absolute bottom-[-20%] right-[20%] w-96 h-96 bg-primary-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
+            {/* Professional Blue Background Blobs */}
+            <div className="absolute top-[-10%] right-[-10%] w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-25 animate-blob"></div>
+            <div className="absolute top-[20%] left-[-10%] w-96 h-96 bg-teal-400 rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob animation-delay-2000"></div>
+            <div className="absolute bottom-[-20%] right-[20%] w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
             <div className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-2xl w-full max-w-lg border border-white/60 relative z-10 backdrop-blur-xl bg-white/90">
                 {signupSuccess ? (
                     <div className="text-center py-8">
@@ -109,7 +109,7 @@ const Signup = () => {
                                 <img src={logo} alt="logo" className="h-9 mt-4 w-auto object-contain" />
                                 <span className="font-extrabold mr-7 mt-6 text-2xl text-slate-800 dark:text-white tracking-tight">Appointy</span>
                             </div>
-                            <h2 className="text-3xl font-[1000] bg-clip-text text-transparent bg-gradient-to-r from-primary-700 to-primary-500 tracking-tight">Create Account</h2>
+                            <h2 className="text-3xl font-[1000] bg-clip-text text-transparent bg-gradient-to-r from-blue-800 to-blue-500 tracking-tight">Create Account</h2>
                             <p className="text-slate-500 text-sm">Join the platform to manage your healthcare seamlessly.</p>
                         </div>
                         {/* Unified Tab Selector */}
@@ -249,7 +249,7 @@ const Signup = () => {
                                             }} className="text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 cursor-pointer" />
                                         </div>
                                     </div>
-                                    <button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 text-white font-bold py-4 px-4 rounded-2xl transition-all shadow-lg shadow-primary-500/30 flex items-center justify-center space-x-2 mt-4 hover:-translate-y-0.5 disabled:opacity-70">
+                                    <button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-800 hover:to-blue-700 text-white font-bold py-4 px-4 rounded-2xl transition-all shadow-lg shadow-blue-700/30 flex items-center justify-center space-x-2 mt-4 hover:-translate-y-0.5 disabled:opacity-70">
                                         {loading ? (
                                             <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                                         ) : (

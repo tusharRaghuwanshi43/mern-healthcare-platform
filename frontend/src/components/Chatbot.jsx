@@ -152,7 +152,7 @@ const BookingWidget = ({ doctor, userInfo, onBooked }) => {
                         animate={{ opacity: 1, y: 0 }}
                         onClick={handleBook}
                         disabled={submitting}
-                        className="w-full flex items-center justify-center gap-2 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white font-bold text-sm rounded-xl transition-all shadow-md"
+                        className="w-full flex items-center justify-center gap-2 py-2.5 bg-blue-700 hover:bg-blue-800 disabled:bg-slate-300 text-white font-bold text-sm rounded-xl transition-all shadow-md"
                     >
                         {submitting ? (
                             <span className="animate-pulse">Processing...</span>
@@ -318,7 +318,7 @@ const Chatbot = () => {
 
                                         {/* Bubble */}
                                         <div className={`p-4 rounded-[1.2rem] shadow-sm text-sm ${msg.type === 'user'
-                                            ? 'bg-indigo-600 text-white rounded-br-sm'
+                                            ? 'bg-blue-700 text-white rounded-br-sm'
                                             : 'bg-white border border-slate-100 text-slate-700 rounded-bl-sm shadow-[0_2px_12px_rgba(0,0,0,0.04)]'
                                             }`}>
 
@@ -447,9 +447,9 @@ const Chatbot = () => {
                                             <img src={auraAvatar} alt="Chopper AI" className="w-full h-full object-cover grayscale" />
                                         </div>
                                         <div className="px-5 py-4 rounded-[1.25rem] bg-white border border-slate-100 shadow-sm rounded-bl-sm flex gap-1">
-                                            <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" />
-                                            <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
-                                            <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
+                                            <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" />
+                                            <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+                                            <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
                                         </div>
                                     </div>
                                 </motion.div>
@@ -484,7 +484,7 @@ const Chatbot = () => {
                                 <button
                                     onClick={() => handleSend()}
                                     disabled={!input.trim() || isLoading}
-                                    className="absolute right-2 w-10 h-10 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-200 disabled:text-slate-400 text-white rounded-[0.8rem] flex items-center justify-center transition-all transform active:scale-95 shadow-sm"
+                                    className="absolute right-2 w-10 h-10 bg-blue-700 hover:bg-blue-800 disabled:bg-slate-200 disabled:text-slate-400 text-white rounded-[0.8rem] flex items-center justify-center transition-all transform active:scale-95 shadow-sm"
                                 >
                                     <Send className="w-4 h-4 ml-0.5" />
                                 </button>

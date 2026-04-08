@@ -189,7 +189,7 @@ const Navbar = () => {
                     ) : (
                         <>
                             <Link to="/login" className="text-l px-2 font-semibold text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Sign In</Link>
-                            <Link to="/signup" className="bg-slate-900 px-2 dark:bg-primary-600 hover:bg-slate-800 dark:hover:bg-primary-700 text-white text-l font-semibold px-5 py-2 rounded-lg transition-colors shadow-sm">Get Started</Link>
+                            <Link to="/signup" className="bg-blue-700 px-2 hover:bg-blue-800 text-white text-l font-semibold px-5 py-2 rounded-lg transition-colors shadow-sm">Get Started</Link>
                         </>
                     )}
                 </div>
@@ -229,7 +229,7 @@ const Navbar = () => {
                                     <a href="/#doctors" onClick={(e) => scrollToSection(e, 'doctors')} className={`px-3 py-2 text-base font-semibold rounded-lg ${activeSection === 'doctors' ? 'text-primary-600 bg-primary-50 dark:bg-slate-800' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800'}`}>Our Partners</a>
                                     <div className="h-px bg-slate-100 dark:bg-slate-700 my-2"></div>
                                     <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 text-base font-semibold text-slate-700 dark:text-slate-200 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800">Sign In</Link>
-                                    <Link to="/signup" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 text-base font-semibold text-primary-600 dark:text-primary-400 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/20">Get Started</Link>
+                                    <Link to="/signup" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 text-base font-semibold text-blue-600 dark:text-primary-400 rounded-lg hover:bg-blue-50 dark:hover:bg-primary-900/20">Get Started</Link>
                                 </>
                             )}
                         </div>
