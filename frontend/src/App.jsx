@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Toaster } from 'react-hot-toast';
 import { useSelector, useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 
 // Pages
 import Login from './pages/Login';
@@ -15,6 +16,7 @@ import AppointmentBooking from './pages/AppointmentBooking';
 import PaymentGateway from './pages/PaymentGateway';
 import DoctorDashboard from './pages/DoctorDashboard';
 import VerifyEmail from './pages/VerifyEmail';
+import ContactUs from './pages/ContactUs';
 
 // Components
 import Navbar from './components/Navbar';
@@ -25,6 +27,22 @@ const AppContent = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace('#', '');
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          const navHeight = 64;
+          const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+          window.scrollTo({ top: elementPosition - navHeight, behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [location.pathname, location.hash]);
 
   const isDashboard = location.pathname.includes('dashboard');
   const isLanding = location.pathname === '/';
@@ -54,6 +72,7 @@ const AppContent = () => {
             <Route path="/patient/dashboard" element={<PatientDashboard />} />
             <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
             <Route path="/verify-email/:token" element={<VerifyEmail />} />
+            <Route path="/contact" element={<ContactUs />} />
           </Routes>
         </main>
       </div>
