@@ -76,7 +76,7 @@ const AppContent = () => {
           </Routes>
         </main>
       </div>
-      
+
       {/* Global AI Chatbot */}
       <Chatbot />
     </>
@@ -85,7 +85,7 @@ const AppContent = () => {
 
 const App = () => {
   return (
-    <GoogleOAuthProvider clientId="352555724788-f7bd9mhi7vj19lv5014sujvkjgpuaan9.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <Router>
         <AppContent />
       </Router>
