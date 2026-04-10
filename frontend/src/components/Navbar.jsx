@@ -27,7 +27,10 @@ const Navbar = () => {
     }, []);
 
     useEffect(() => {
-        if (!isLanding) return;
+        if (!isLanding) {
+            setActiveSection('home');
+            return;
+        }
         const observerOptions = { root: null, rootMargin: '-45% 0px -45% 0px', threshold: 0 };
         const observerCallback = (entries) => {
             entries.forEach((entry) => { if (entry.isIntersecting) setActiveSection(entry.target.id); });
@@ -41,7 +44,7 @@ const Navbar = () => {
             sections.forEach(section => observer.unobserve(section));
             window.removeEventListener('scroll', handleTopScroll);
         };
-    }, [isLanding]);
+    }, [isLanding, location.pathname]);
 
     const handleNavigation = (e, path, sectionId) => {
         if (e) e.preventDefault();
@@ -67,6 +70,7 @@ const Navbar = () => {
                     window.history.pushState(null, '', path);
                 }
             } else {
+                setActiveSection('home');
                 navigate(path + (sectionId ? `#${sectionId}` : ''));
             }
         };

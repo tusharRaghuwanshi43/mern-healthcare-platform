@@ -33,7 +33,8 @@ const registerUser = async (req, res) => {
         if (user) {
             // Mocking email verification
             const verifyToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '15m' });
-            const verifyUrl = `http://localhost:5173/verify-email/${verifyToken}`;
+            const frontendUrl = process.env.FRONTEND_URL || req.headers.origin || 'http://localhost:5173';
+            const verifyUrl = `${frontendUrl}/verify-email/${verifyToken}`;
 
             // console.log(`[Mock Email] Please verify your email by clicking: ${verifyUrl}`);
             // Send real email

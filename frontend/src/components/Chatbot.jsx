@@ -497,29 +497,61 @@ const Chatbot = () => {
             {/* ─── FLOATING CHAT BUTTON ──────────────────────────────────────── */}
             <AnimatePresence>
                 {!isOpen && (
-                    <motion.button
-                        initial={{ scale: 0, opacity: 0, y: 20 }}
-                        animate={{ scale: 1, opacity: 1, y: 0 }}
-                        exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                        whileHover={{ scale: 1.03, y: -4 }}
-                        whileTap={{ scale: 0.97 }}
-                        onClick={() => setIsOpen(true)}
-                        className="group flex items-center gap-4 bg-white pl-2 pr-6 py-2 rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-slate-200 overflow-hidden relative cursor-pointer"
-                    >
-                        <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-fuchsia-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                        <div className="relative">
-                            <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-white shadow-md">
+                    <>
+                        {/* Desktop / Tablet Button */}
+                        <motion.button
+                            initial={{ scale: 0, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                            whileHover={{ scale: 1.03, y: -4 }}
+                            whileTap={{ scale: 0.97 }}
+                            onClick={() => setIsOpen(true)}
+                            className="hidden sm:flex group items-center gap-4 bg-white pl-2 pr-6 py-2 rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.15)] border border-slate-200 overflow-hidden relative cursor-pointer"
+                        >
+                            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-fuchsia-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                            <div className="relative">
+                                <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-white shadow-md">
+                                    <img src={auraAvatar} alt="Chopper AI" className="w-full h-full object-cover" />
+                                </div>
+                                <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full z-10" />
+                            </div>
+                            <div className="flex flex-col items-start relative z-10 text-left">
+                                <span className="font-extrabold text-[#111827] text-[15px] leading-tight flex items-center gap-1.5">
+                                    Ask Chopper AI <Sparkles className="w-3.5 h-3.5 text-indigo-500 animate-pulse" />
+                                </span>
+                                <span className="text-xs font-semibold text-slate-500">Your health co-pilot</span>
+                            </div>
+                        </motion.button>
+
+                        {/* Mobile Movable Small Icon Button */}
+                        <motion.button
+                            initial={{ scale: 0, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                            drag
+                            dragConstraints={{ 
+                                left: -(typeof window !== 'undefined' ? window.innerWidth - 80 : 300), 
+                                right: 0, 
+                                top: -(typeof window !== 'undefined' ? window.innerHeight - 80 : 500), 
+                                bottom: 0 
+                            }}
+                            dragElastic={0.1}
+                            dragMomentum={false}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => setIsOpen(true)}
+                            className="sm:hidden flex items-center justify-center w-14 h-14 bg-white rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.2)] border border-slate-200 relative cursor-pointer"
+                        >
+                            <div className="w-full h-full rounded-full overflow-hidden border-2 border-white shadow-sm">
                                 <img src={auraAvatar} alt="Chopper AI" className="w-full h-full object-cover" />
                             </div>
                             <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full z-10" />
-                        </div>
-                        <div className="flex flex-col items-start relative z-10 text-left">
-                            <span className="font-extrabold text-[#111827] text-[15px] leading-tight flex items-center gap-1.5">
-                                Ask Chopper AI <Sparkles className="w-3.5 h-3.5 text-indigo-500 animate-pulse" />
-                            </span>
-                            <span className="text-xs font-semibold text-slate-500">Your health co-pilot</span>
-                        </div>
-                    </motion.button>
+                            
+                            {/* Small AI Info Tag */}
+                            <div className="absolute -top-2 -left-2 bg-indigo-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full shadow-sm flex items-center gap-0.5">
+                                <Sparkles className="w-2 h-2" /> AI
+                            </div>
+                        </motion.button>
+                    </>
                 )}
             </AnimatePresence>
         </div>
