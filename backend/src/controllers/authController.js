@@ -86,6 +86,7 @@ const loginUser = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 role: user.role,
+                profilePhoto: user.profilePhoto,
                 token
             });
         } else {
@@ -168,6 +169,7 @@ const googleAuth = async (req, res) => {
             name: user.name,
             email: user.email,
             role: user.role,
+            profilePhoto: user.profilePhoto,
             token
         });
     } catch (error) {
