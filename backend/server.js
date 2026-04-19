@@ -32,6 +32,11 @@ app.get('/', (req, res) => {
     res.send('Appointy API is running...');
 });
 
+//Ping route (for UptimeRobot)
+app.get('/ping', (req, res) => {
+    res.status(200).send('ok');
+});
+
 // Routes
 app.use('/api/auth', require('./src/routes/authRoutes'));
 app.use('/api/users', require('./src/routes/userRoutes'));
