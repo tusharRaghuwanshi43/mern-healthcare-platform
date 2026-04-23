@@ -6,7 +6,7 @@ import { Navigate, Link, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { logout, setCredentials } from '../redux/authSlice';
 import logo from '../assets/logo.png';
-import { Calendar, Clock, LogOut, Home, Users, Settings, Activity, Star, ClipboardList, Wallet, Camera, Edit3, ClipboardCheck, Mail, Phone, X, ChevronRight, MapPin, ShieldAlert, Search } from 'lucide-react';
+import { Calendar, Clock, LogOut, Home, Users, Settings, Activity, Star, ClipboardList, Wallet, Camera, Edit3, ClipboardCheck, Mail, Phone, X, ChevronRight, MapPin, ShieldAlert, Search, FileText, CreditCard } from 'lucide-react';
 const DoctorDashboard = () => {
     const { userInfo } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
@@ -27,10 +27,12 @@ const DoctorDashboard = () => {
     const [prescriptionApt, setPrescriptionApt] = useState(null);
     const [prescriptionForm, setPrescriptionForm] = useState({ medicines: [{ name: '', dosage: '', duration: '', notes: '' }], generalInstructions: '' });
     const [submittingPrescription, setSubmittingPrescription] = useState(false);
-    // Availability Modal State
     const [isAvailabilityModalOpen, setIsAvailabilityModalOpen] = useState(false);
     const [availabilityForm, setAvailabilityForm] = useState([]);
     const [updatingAvailability, setUpdatingAvailability] = useState(false);
+    const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
+    const [viewPrescriptionData, setViewPrescriptionData] = useState(null);
+    const [fetchingPrescription, setFetchingPrescription] = useState(false);
     const fetchDashboardData = async () => {
         try {
             const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
@@ -77,6 +79,18 @@ const DoctorDashboard = () => {
     }, [userInfo]);
     if (!userInfo || userInfo.role !== 'doctor') return <Navigate to="/login" replace />;
     const handleLogout = () => dispatch(logout());
+    const handleViewPrescription = async (appointmentId) => {
+        try {
+            setFetchingPrescription(true);
+            const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
+            const { data } = await api.get(`/api/appointments/${appointmentId}/prescription`, config);
+            setViewPrescriptionData(data);
+        } catch {
+            toast.error('Prescription not available yet.');
+        } finally {
+            setFetchingPrescription(false);
+        }
+    };
     // Update handlers...
     const handleUpdateStatus = async (appointmentId, status) => {
         try {
@@ -245,12 +259,12 @@ const DoctorDashboard = () => {
                 </div>
             </div>
             {/* Mobile Header */}
-            <div className="md:hidden fixed top-0 w-full bg-white border-b border-slate-100 p-4 flex justify-between items-center z-30 shadow-sm">
-                <div className="flex items-center space-x-2 font-bold text-xl text-primary-600">
-                    <Activity className="w-6 h-6" />
-                    <span>Appointy Pro</span>
+            <div className="md:hidden fixed top-0 w-full bg-white border-b border-slate-100 px-4 py-3 flex justify-between items-center z-30 shadow-sm">
+                <div className="flex items-center gap-3">
+                    <img src={userInfo?.profilePhoto || `https://ui-avatars.com/api/?name=${userInfo?.name}&background=2563eb&color=fff`} alt="Dr" className="w-8 h-8 rounded-full object-cover border-2 border-primary-100" />
+                    <span className="font-bold text-slate-800 text-sm">{userInfo?.name?.startsWith('Dr.') ? userInfo?.name : `Dr. ${userInfo?.name?.split(' ')[0]}`}</span>
                 </div>
-                <button onClick={handleLogout} className="p-2 text-slate-500 hover:text-red-500">
+                <button onClick={handleLogout} className="p-2 text-slate-400 hover:text-red-500">
                     <LogOut className="w-5 h-5" />
                 </button>
             </div>
@@ -281,7 +295,7 @@ const DoctorDashboard = () => {
                                         <div className="bg-green-50/80 p-3 rounded-2xl text-green-600 border border-green-100"><Wallet className="w-6 h-6" /></div>
                                         <span className="text-xs font-bold text-slate-400 uppercase">Financials</span>
                                     </div>
-                                    <div className="text-3xl font-extrabold text-slate-800 mb-1">${totalEarnings}</div>
+                                    <div className="text-3xl font-extrabold text-slate-800 mb-1">₹{totalEarnings}</div>
                                     <div className="text-sm font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-md self-start mt-1 cursor-help" title={`Monthly: $${monthlyEarnings}`}>+${monthlyEarnings} this month</div>
                                 </div>
                                 <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 flex flex-col hover:shadow-md transition-shadow">
@@ -334,7 +348,7 @@ const DoctorDashboard = () => {
                                                         </div>
                                                     </div>
                                                     <div className="hidden md:flex flex-col items-end sm:items-center text-sm">
-                                                        <span className="font-extrabold text-slate-700">${apt.consultationFee}</span>
+                                                        <span className="font-extrabold text-slate-700">₹{apt.consultationFee}</span>
                                                         <span className={`text-[10px] font-bold uppercase px-2 py-0.5 mt-1 rounded-md ${apt.paymentStatus === 'paid' ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-amber-50 text-amber-600 border border-amber-100'}`}>
                                                             {apt.paymentStatus === 'paid' ? 'Paid ✓' : 'Payment Pend.'}
                                                         </span>
@@ -420,7 +434,7 @@ const DoctorDashboard = () => {
                                         <div className="flex justify-between items-center mt-3 pt-3 border-t border-slate-100">
                                             <div className="text-xs text-slate-500 truncate max-w-[120px]" title={apt.patient?.medicalNotes}>{apt.patient?.medicalNotes || 'No medical notes'}</div>
                                             <div className="text-right flex flex-col items-end">
-                                                <span className="text-sm font-extrabold text-slate-700">${apt.consultationFee}</span>
+                                                <span className="text-sm font-extrabold text-slate-700">₹{apt.consultationFee}</span>
                                                 <span className={`text-[10px] font-bold uppercase px-2 py-0.5 mt-1 rounded-md border ${apt.paymentStatus === 'paid' ? 'bg-green-50 text-green-600 border-green-100' : 'bg-amber-50 text-amber-500 border-amber-100'}`}>
                                                     {apt.paymentStatus === 'paid' ? 'Paid ✓' : 'Pending'}
                                                 </span>
@@ -544,27 +558,30 @@ const DoctorDashboard = () => {
                         </motion.div>
                     )}
                     {activeTab === 'careHistory' && (
-                        <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100">
-                            <div className="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
+                        <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="space-y-6">
+                            <div className="flex justify-between items-center">
                                 <h2 className="text-xl font-extrabold text-slate-800 flex items-center gap-2">
-                                    <ClipboardList className="w-5 h-5 text-indigo-500" /> Care Partner History
+                                    <ClipboardList className="w-5 h-5 text-indigo-500" /> My Appointments as Patient
                                 </h2>
+                                <Link to="/doctors" className="flex items-center gap-1.5 text-sm font-bold text-primary-600 hover:text-primary-700 bg-primary-50 px-4 py-2 rounded-xl transition-colors">
+                                    <Search className="w-4 h-4" /> Book New
+                                </Link>
                             </div>
                             {bookedAppointments.length > 0 ? (
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     {bookedAppointments.map(apt => (
-                                        <div key={apt._id} className="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex flex-col hover:shadow-md transition-shadow group">
+                                        <div key={apt._id} className="bg-white border border-slate-100 rounded-2xl p-5 flex flex-col hover:shadow-md transition-shadow shadow-sm">
                                             <div className="flex items-center gap-4 mb-4">
-                                                <img src={apt.doctor?.profilePhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(apt.doctor?.name || 'D')}&background=6366f1&color=fff`} className="w-14 h-14 rounded-xl object-cover shadow-sm bg-white border border-slate-200" alt={apt.doctor?.name} />
+                                                <img src={apt.doctor?.profilePhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(apt.doctor?.name || 'D')}&background=6366f1&color=fff`} className="w-12 h-12 rounded-xl object-cover shadow-sm bg-white border border-slate-200" alt={apt.doctor?.name} />
                                                 <div>
-                                                    <h4 className="text-lg font-bold text-slate-800 group-hover:text-primary-600 transition-colors">Dr. {apt.doctor?.name}</h4>
+                                                    <h4 className="text-base font-bold text-slate-800">Dr. {apt.doctor?.name}</h4>
                                                     <p className="text-xs font-bold text-primary-500 bg-primary-50 px-2 py-0.5 rounded-md inline-block mt-1">{apt.doctor?.specialty}</p>
                                                 </div>
                                             </div>
-                                            <div className="flex items-center justify-between bg-white px-4 py-3 rounded-xl border border-slate-100 shadow-sm mb-4">
+                                            <div className="flex items-center justify-between bg-slate-50 px-4 py-3 rounded-xl border border-slate-100 mb-4">
                                                 <div className="flex items-center gap-2">
                                                     <Calendar className="w-4 h-4 text-slate-400" />
-                                                    <span className="text-sm font-bold text-slate-700">{new Date(apt.date).toLocaleDateString()}</span>
+                                                    <span className="text-sm font-bold text-slate-700">{new Date(apt.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
                                                 </div>
                                                 <div className="flex items-center gap-2">
                                                     <Clock className="w-4 h-4 text-secondary-500" />
@@ -572,14 +589,27 @@ const DoctorDashboard = () => {
                                                 </div>
                                             </div>
                                             <div className="flex items-center justify-between">
-                                                <span className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest ${apt.status === 'completed' ? 'bg-green-50 text-green-600 border border-green-100' :
+                                                <span className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest ${
+                                                    apt.status === 'completed' ? 'bg-green-50 text-green-600 border border-green-100' :
                                                     apt.status === 'confirmed' ? 'bg-blue-50 text-blue-600 border border-blue-100' :
-                                                        apt.status === 'pending' ? 'bg-amber-50 text-amber-600 border border-amber-100' :
-                                                            'bg-slate-100 text-slate-500 border border-slate-200'
-                                                    }`}>
-                                                    {apt.status}
-                                                </span>
-                                                <span className="text-xs font-bold text-slate-400">Fee: ${apt.consultationFee}</span>
+                                                    apt.status === 'pending' ? 'bg-amber-50 text-amber-600 border border-amber-100' :
+                                                    'bg-slate-100 text-slate-500 border border-slate-200'
+                                                }`}>{apt.status}</span>
+                                                <div className="flex gap-2">
+                                                    {apt.status === 'confirmed' && apt.paymentStatus !== 'paid' && (
+                                                        <button onClick={() => navigate('/checkout', { state: { amount: apt.consultationFee, appointmentId: apt._id } })} className="text-xs font-bold bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-xl flex items-center gap-1 transition-colors">
+                                                            <CreditCard className="w-3.5 h-3.5" /> Pay
+                                                        </button>
+                                                    )}
+                                                    {apt.status === 'confirmed' && apt.paymentStatus === 'paid' && (
+                                                        <span className="text-xs font-bold bg-green-50 text-green-600 px-3 py-1.5 rounded-xl border border-green-100">Paid ✓</span>
+                                                    )}
+                                                    {apt.status === 'completed' && (
+                                                        <button onClick={() => handleViewPrescription(apt._id)} className="w-8 h-8 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center transition-colors" title="View Prescription">
+                                                            {fetchingPrescription ? <div className="w-3 h-3 border-2 border-indigo-300 border-t-indigo-600 rounded-full animate-spin" /> : <FileText className="w-4 h-4" />}
+                                                        </button>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                     ))}
@@ -587,10 +617,10 @@ const DoctorDashboard = () => {
                             ) : (
                                 <div className="bg-slate-50 rounded-3xl p-10 text-center border border-slate-100 border-dashed">
                                     <ClipboardList className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                                    <h3 className="text-xl font-bold text-slate-800 mb-2">No Care History</h3>
-                                    <p className="text-slate-500">Appointments you book with other care partners will appear here.</p>
-                                    <Link to="/doctors" className="mt-4 inline-flex items-center gap-2 text-primary-600 font-bold hover:underline">
-                                        Book your first care partner <ChevronRight className="w-4 h-4" />
+                                    <h3 className="text-xl font-bold text-slate-800 mb-2">No Appointments Yet</h3>
+                                    <p className="text-slate-500 mb-4">Book an appointment with a care partner to see it here.</p>
+                                    <Link to="/doctors" className="inline-flex items-center gap-2 text-primary-600 font-bold hover:underline bg-primary-50 px-6 py-2.5 rounded-full">
+                                        Find a Care Partner <ChevronRight className="w-4 h-4" />
                                     </Link>
                                 </div>
                             )}
@@ -623,7 +653,7 @@ const DoctorDashboard = () => {
                                             <input type="number" value={editForm.experienceYears} onChange={(e) => setEditForm({ ...editForm, experienceYears: e.target.value })} className="w-full px-4 py-3 rounded-xl bg-slate-50/50 border border-slate-200 focus:ring-4 focus:ring-primary-100 focus:border-primary-400 font-medium text-slate-700 outline-none transition-all" required />
                                         </div>
                                         <div className="flex-1">
-                                            <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Session Fee ($)</label>
+                                            <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Session Fee (₹)</label>
                                             <input type="number" value={editForm.consultationFee} onChange={(e) => setEditForm({ ...editForm, consultationFee: e.target.value })} className="w-full px-4 py-3 rounded-xl bg-slate-50/50 border border-slate-200 focus:ring-4 focus:ring-primary-100 focus:border-primary-400 font-medium text-slate-700 outline-none transition-all" required />
                                         </div>
                                     </div>
@@ -797,39 +827,95 @@ const DoctorDashboard = () => {
                     </motion.div>
                 </div>
             )}
+            {/* Mobile More Sheet */}
+            {mobileMoreOpen && (
+                <>
+                    <div className="md:hidden fixed inset-0 z-40" onClick={() => setMobileMoreOpen(false)} />
+                    <div className="md:hidden fixed bottom-16 left-0 w-full bg-white border-t border-slate-200 shadow-2xl p-4 grid grid-cols-3 gap-3 z-50">
+                        <button onClick={() => { setActiveTab('patients'); setMobileMoreOpen(false); window.scrollTo(0,0); }} className={`flex flex-col items-center gap-1.5 p-3 rounded-2xl ${activeTab === 'patients' ? 'bg-primary-50 text-primary-600' : 'bg-slate-50 text-slate-600'}`}>
+                            <Users className="w-6 h-6" />
+                            <span className="text-[10px] font-bold">Patients</span>
+                        </button>
+                        <button onClick={() => { setActiveTab('careHistory'); setMobileMoreOpen(false); window.scrollTo(0,0); }} className={`flex flex-col items-center gap-1.5 p-3 rounded-2xl ${activeTab === 'careHistory' ? 'bg-primary-50 text-primary-600' : 'bg-slate-50 text-slate-600'}`}>
+                            <ClipboardList className="w-6 h-6" />
+                            <span className="text-[10px] font-bold">My Apts.</span>
+                        </button>
+                        <button onClick={() => { setIsAvailabilityModalOpen(true); setMobileMoreOpen(false); }} className="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-slate-50 text-slate-600">
+                            <Clock className="w-6 h-6" />
+                            <span className="text-[10px] font-bold">Hours</span>
+                        </button>
+                    </div>
+                </>
+            )}
             {/* Mobile Bottom Navigation */}
             <div className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-slate-100 flex justify-around items-center p-3 z-50 pb-safe">
-                <button
-                    onClick={() => { setActiveTab('overview'); window.scrollTo(0,0); }}
-                    className={`flex flex-col items-center space-y-1 ${activeTab === 'overview' ? 'text-primary-600' : 'text-slate-400 hover:text-slate-600'}`}
-                >
+                <button onClick={() => { setActiveTab('overview'); window.scrollTo(0,0); }} className={`flex flex-col items-center space-y-1 ${activeTab === 'overview' ? 'text-primary-600' : 'text-slate-400'}`}>
                     <Home className="w-6 h-6" />
                     <span className="text-[10px] font-bold">Home</span>
                 </button>
-                <button
-                    onClick={() => { setActiveTab('appointments'); window.scrollTo(0,0); }}
-                    className={`flex flex-col items-center space-y-1 ${activeTab === 'appointments' ? 'text-primary-600' : 'text-slate-400 hover:text-slate-600'}`}
-                >
+                <button onClick={() => { setActiveTab('appointments'); window.scrollTo(0,0); }} className={`flex flex-col items-center space-y-1 ${activeTab === 'appointments' ? 'text-primary-600' : 'text-slate-400'}`}>
                     <Calendar className="w-6 h-6" />
                     <span className="text-[10px] font-bold">Schedule</span>
                 </button>
-                <button
-                    onClick={() => { setIsAvailabilityModalOpen(true); window.scrollTo(0,0); }}
-                    className={`flex flex-col items-center space-y-1 text-slate-400 hover:text-slate-600`}
-                >
-                    <Clock className="w-6 h-6" />
-                    <span className="text-[10px] font-bold">Hours</span>
-                </button>
-                <button
-                    onClick={() => { setActiveTab('profile'); window.scrollTo(0,0); }}
-                    className={`flex flex-col items-center space-y-1 ${activeTab === 'profile' ? 'text-primary-600' : 'text-slate-400 hover:text-slate-600'}`}
-                >
+                <button onClick={() => { setActiveTab('profile'); window.scrollTo(0,0); }} className={`flex flex-col items-center space-y-1 ${activeTab === 'profile' ? 'text-primary-600' : 'text-slate-400'}`}>
                     <Settings className="w-6 h-6" />
-                    <span className="text-[10px] font-bold">Settings</span>
+                    <span className="text-[10px] font-bold">Profile</span>
+                </button>
+                <button onClick={() => setMobileMoreOpen(!mobileMoreOpen)} className={`flex flex-col items-center space-y-1 ${mobileMoreOpen || ['patients','careHistory'].includes(activeTab) ? 'text-primary-600' : 'text-slate-400'}`}>
+                    <Activity className="w-6 h-6" />
+                    <span className="text-[10px] font-bold">More</span>
                 </button>
             </div>
-            {/* End of mobile bottom nav */}
+            {/* Prescription View Modal (for doctor as patient) */}
+            {viewPrescriptionData && (
+                <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setViewPrescriptionData(null)} />
+                    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white rounded-[2rem] shadow-2xl w-full max-w-2xl relative z-10 p-6 md:p-8 max-h-[90vh] overflow-y-auto border border-white">
+                        <div className="flex items-center space-x-3 mb-6 bg-indigo-50 p-4 rounded-2xl border border-indigo-100">
+                            <div className="w-12 h-12 bg-indigo-500 text-white rounded-xl flex items-center justify-center text-xl font-bold shadow-md">Rx</div>
+                            <div>
+                                <h2 className="text-xl font-extrabold text-slate-800">Digital Prescription</h2>
+                                <p className="text-xs font-bold text-indigo-600 uppercase tracking-wider">Official Medical Record</p>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4 mb-6">
+                            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Doctor</p>
+                                <p className="font-bold text-slate-800">{viewPrescriptionData.doctor?.name}</p>
+                                <p className="text-sm font-medium text-primary-600">{viewPrescriptionData.doctor?.specialty}</p>
+                            </div>
+                            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Issued</p>
+                                <p className="font-bold text-slate-800">{new Date(viewPrescriptionData.createdAt).toLocaleDateString()}</p>
+                            </div>
+                        </div>
+                        <div className="space-y-4">
+                            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-2">Medications</h3>
+                            {viewPrescriptionData.medicines?.map((med, idx) => (
+                                <div key={idx} className="p-4 bg-white rounded-2xl border-2 border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                    <div>
+                                        <h4 className="font-bold text-slate-800">{med.name}</h4>
+                                        <div className="flex items-center space-x-2 mt-1">
+                                            <span className="text-xs font-bold bg-slate-100 text-slate-600 px-2 py-1 rounded-md">{med.dosage}</span>
+                                            {med.notes && <span className="text-xs italic text-slate-500">• {med.notes}</span>}
+                                        </div>
+                                    </div>
+                                    <div className="text-xs font-bold text-indigo-700 bg-indigo-50 px-3 py-1.5 rounded-lg border border-indigo-100 whitespace-nowrap">{med.duration}</div>
+                                </div>
+                            ))}
+                            {viewPrescriptionData.generalInstructions && (
+                                <div className="p-5 bg-amber-50 rounded-2xl border border-amber-100 text-sm font-medium text-amber-900 leading-relaxed mt-2">
+                                    {viewPrescriptionData.generalInstructions}
+                                </div>
+                            )}
+                        </div>
+                        <div className="flex justify-end pt-6 mt-2">
+                            <button onClick={() => setViewPrescriptionData(null)} className="px-8 py-3 rounded-xl font-bold bg-slate-800 hover:bg-slate-900 text-white shadow-lg transition-all">Close</button>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
         </div>
     );
 };
-export default DoctorDashboard;
+export default DoctorDashboard;

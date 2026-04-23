@@ -68,7 +68,13 @@ const PatientDashboard = () => {
                     medicalNotes: data.medicalNotes || '',
                     profilePhoto: null
                 });
-                if (data.profilePhoto) setProfilePhotoPreview(data.profilePhoto);
+                if (data.profilePhoto) {
+                    setProfilePhotoPreview(data.profilePhoto);
+                    // Sync profilePhoto into Redux so Navbar reflects it immediately
+                    if (data.profilePhoto !== userInfo.profilePhoto) {
+                        dispatch(setCredentials({ ...userInfo, profilePhoto: data.profilePhoto }));
+                    }
+                }
             } catch (error) {
                 console.error("Error fetching patient profile:", error);
                 toast.error(error.response?.data?.message || 'Failed to fetch profile.');

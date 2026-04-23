@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { toast } from 'react-hot-toast';
+import SuccessCelebration from '../components/SuccessCelebration';
 const SPECIALTIES = ['All', 'Cardiologist', 'Dermatologist', 'Pediatrician', 'Neurologist', 'Orthopedic'];
 const SLOTS = ['09:00 AM', '10:00 AM', '11:00 AM', '01:00 PM', '02:30 PM', '04:00 PM'];
 const DoctorSearch = () => {
@@ -26,6 +27,7 @@ const DoctorSearch = () => {
     const [selectedSlot, setSelectedSlot] = useState('');
     const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
     const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+    const [showBookingSuccess, setShowBookingSuccess] = useState(false);
     // Generate rolling 7-day view
     const getUpcomingDays = () => {
         const days = [];
@@ -158,12 +160,7 @@ const DoctorSearch = () => {
             };
             await api.post('/api/appointments/book', bookingData, config);
             closeBookingModal();
-            toast.success('Appointment request sent! You will be able to pay once the doctor accepts your request.');
-            if (userInfo?.role === 'doctor') {
-                navigate('/doctor/dashboard');
-            } else {
-                navigate('/patient/dashboard');
-            }
+            setShowBookingSuccess(true);
         } catch (error) {
             console.error('Booking failed:', error);
             toast.error(error.response?.data?.message || 'Failed to book appointment. Please try again.');
@@ -171,7 +168,12 @@ const DoctorSearch = () => {
             setBookingLoading(false);
         }
     };
+    const handleBookingSuccessClose = () => {
+        setShowBookingSuccess(false);
+        navigate(userInfo?.role === 'doctor' ? '/doctor/dashboard' : '/patient/dashboard');
+    };
     return (
+        <>
         <div className="bg-slate-50 dark:bg-slate-950 min-h-screen pb-12 font-sans text-slate-900 dark:text-slate-100 relative transition-colors duration-300">
             <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary-200 dark:bg-primary-900 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -z-10 animate-pulse"></div>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8 relative z-10">
@@ -253,12 +255,12 @@ const DoctorSearch = () => {
                         <div className="mb-4 pb-4 border-b border-slate-100">
                             <div className="flex justify-between items-center mb-3">
                                 <h3 className="font-bold text-slate-500 text-sm uppercase tracking-widest">Max Fee</h3>
-                                <div className="bg-primary-50 text-primary-700 font-black px-2 py-0.5 rounded-lg text-sm border border-primary-100 shadow-sm">${maxPrice}</div>
+                                <div className="bg-primary-50 text-primary-700 font-black px-2 py-0.5 rounded-lg text-sm border border-primary-100 shadow-sm">₹{maxPrice}</div>
                             </div>
                             <input type="range" min="100" max="2000" step="50" value={maxPrice} onChange={(e) => setMaxPrice(Number(e.target.value))} className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary-600" />
                             <div className="flex justify-between text-sm font-bold text-slate-400 mt-2">
-                                <span>$100</span>
-                                <span>$2000</span>
+                                <span>₹100</span>
+                                <span>₹2000</span>
                             </div>
                         </div>
                         {/* Rating */}
@@ -474,7 +476,7 @@ const DoctorSearch = () => {
                             <div className="p-8 pt-6 border-t border-slate-100 bg-slate-50 flex flex-col sm:flex-row justify-between items-center gap-6">
                                 <div className="w-full sm:w-auto text-center sm:text-left bg-white px-6 py-3 rounded-2xl border border-slate-100 shadow-sm">
                                     <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total Fee</p>
-                                    <p className="text-3xl font-extrabold text-slate-800">${bookingDoctor.fee}</p>
+                                    <p className="text-3xl font-extrabold text-slate-800">₹{bookingDoctor.fee}</p>
                                 </div>
                                 <button onClick={handleConfirmBooking} disabled={!selectedDate || !selectedSlot || bookingLoading} className={`w-full sm:w-auto flex-1 px-8 py-4 rounded-2xl font-bold flex items-center justify-center space-x-2 transition-all ${(!selectedDate || !selectedSlot || bookingLoading) ? 'bg-slate-200 text-slate-500 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600 text-white shadow-lg shadow-green-500/30 transform hover:-translate-y-0.5'}`}>
                                     <span>{bookingLoading ? 'Processing Request...' : 'Proceed to Checkout'}</span>
@@ -559,7 +561,7 @@ const DoctorSearch = () => {
                                             <p className="text-xs font-black text-primary-600 uppercase tracking-widest leading-tight">Consultation<br />Fee</p>
                                         </div>
                                     </div>
-                                    <p className="text-4xl font-black text-primary-700">${viewProfileDoctor.fee}</p>
+                                    <p className="text-4xl font-black text-primary-700">₹{viewProfileDoctor.fee}</p>
                                 </div>
                                 <div>
                                     <div className="flex items-center justify-between mb-4">
@@ -625,6 +627,15 @@ const DoctorSearch = () => {
                 )}
             </AnimatePresence>
         </div>
+            <SuccessCelebration
+                show={showBookingSuccess}
+                onClose={handleBookingSuccessClose}
+                title="Appointment Booked!"
+                message="Your request has been sent to the doctor. You'll be able to pay once it's confirmed."
+                buttonText="View My Dashboard"
+                variant="booking"
+            />
+        </>
     );
 };
 export default DoctorSearch;

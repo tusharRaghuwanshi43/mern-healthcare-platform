@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import api from '../utils/api';
 import { ShieldCheck, CreditCard, CheckCircle2, AlertCircle } from 'lucide-react';
+import SuccessCelebration from '../components/SuccessCelebration';
 // Public Stripe key for test mode
 const stripePromise = loadStripe('pk_test_51SDVBPJFeSEk5i38YfMBBQeK4SuNBL4xRz4Cs4Dr8CXuawWGhTJ4eJGgEqyOuqrMEIcQykKhpVYSBjNOYOmj9NE000Nf8Sopqg');
 const CheckoutForm = ({ amount, onSuccess }) => {
@@ -56,7 +57,7 @@ const CheckoutForm = ({ amount, onSuccess }) => {
                 ) : (
                     <span className="flex items-center gap-2">
                         <CreditCard className="w-5 h-5" />
-                        Pay ${amount} Securely
+                        Pay ₹{amount} Securely
                     </span>
                 )}
             </button>
@@ -71,6 +72,7 @@ const PaymentGateway = () => {
     const navigate = useNavigate();
     const [clientSecret, setClientSecret] = useState("");
     const { userInfo } = useSelector((state) => state.auth);
+    const [showSuccess, setShowSuccess] = useState(false);
 
     // Safely fallback if state is missing
     const paymentData = location.state || { amount: 150 };
@@ -103,8 +105,12 @@ const PaymentGateway = () => {
                 console.error("Failed to sync successful payment with backend:", error);
             }
         }
-        // Navigate back to the dashboard securely
-        navigate('/patient/dashboard', { state: { paymentSuccess: true, paymentId } });
+        setShowSuccess(true);
+    };
+    const handleSuccessClose = () => {
+        setShowSuccess(false);
+        const dashPath = userInfo?.role === 'doctor' ? '/doctor/dashboard' : '/patient/dashboard';
+        navigate(dashPath);
     };
     const appearance = {
         theme: 'stripe',
@@ -124,6 +130,7 @@ const PaymentGateway = () => {
         }
     };
     return (
+        <>
         <div className="bg-slate-50 min-h-screen pt-8 pb-12 font-sans text-slate-900 relative flex items-center justify-center">
             {/* Background elements */}
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
@@ -145,7 +152,7 @@ const PaymentGateway = () => {
                     <div className="bg-gradient-to-r from-primary-600 to-indigo-600 p-6 rounded-[1.5rem] mb-8 flex justify-between items-center text-white shadow-lg shadow-primary-500/20 transform hover:scale-[1.02] transition-transform">
                         <div>
                             <span className="text-primary-100 font-extrabold text-xs uppercase tracking-widest block mb-1">Total Amount Due</span>
-                            <span className="text-4xl font-black">${paymentData.amount}</span>
+                            <span className="text-4xl font-black">₹{paymentData.amount}</span>
                         </div>
                         <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/20">
                             <CheckCircle2 className="w-6 h-6 text-white" />
@@ -168,6 +175,15 @@ const PaymentGateway = () => {
                 </div>
             </motion.div>
         </div>
+            <SuccessCelebration
+                show={showSuccess}
+                onClose={handleSuccessClose}
+                title="Payment Successful!"
+                message="Your consultation fee has been processed securely. You're all set for your appointment!"
+                buttonText="Go to Dashboard"
+                variant="payment"
+            />
+        </>
     );
 };
 // Simple AnimatePresence fallback if not imported correctly at top

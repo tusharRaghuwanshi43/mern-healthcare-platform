@@ -5,6 +5,7 @@ import { FaCalendarAlt, FaClock, FaCheckCircle, FaUserMd } from 'react-icons/fa'
 import { useSelector } from 'react-redux';
 import { toast } from 'react-hot-toast';
 import api from '../utils/api';
+import SuccessCelebration from '../components/SuccessCelebration';
 
 const AppointmentBooking = () => {
     const { doctorId } = useParams();
@@ -17,6 +18,7 @@ const AppointmentBooking = () => {
     const [selectedSlot, setSelectedSlot] = useState('');
     const [isBookingDetailsVisible, setBookingDetailsVisible] = useState(false);
     const [bookingLoading, setBookingLoading] = useState(false);
+    const [showBookingSuccess, setShowBookingSuccess] = useState(false);
 
     // Fetch real doctor data from API using the doctorId from the URL
     useEffect(() => {
@@ -92,9 +94,7 @@ const AppointmentBooking = () => {
                 consultationFee: doctor.consultationFee
             };
             await api.post('/api/appointments/book', appointmentData, config);
-            toast.success('Appointment request sent! Wait for doctor approval.');
-            const dashboardPath = userInfo.role === 'doctor' ? '/doctor/dashboard' : '/patient/dashboard';
-            navigate(dashboardPath);
+            setShowBookingSuccess(true);
         } catch (error) {
             console.error('Booking error:', error);
             const message = error.response?.data?.message || 'Failed to book appointment.';
@@ -122,6 +122,7 @@ const AppointmentBooking = () => {
     }
 
     return (
+        <>
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -145,7 +146,7 @@ const AppointmentBooking = () => {
                     </div>
                     <div className="mt-6 md:mt-0 text-left md:text-right">
                         <div className="text-slate-500 text-sm">Consultation Fee</div>
-                        <div className="text-3xl font-bold text-slate-800">${doctor.consultationFee}</div>
+                        <div className="text-3xl font-bold text-slate-800">₹{doctor.consultationFee}</div>
                     </div>
                 </div>
                 <div className="p-8">
@@ -261,6 +262,18 @@ const AppointmentBooking = () => {
                 </motion.div>
             )}
         </motion.div>
+            <SuccessCelebration
+                show={showBookingSuccess}
+                onClose={() => {
+                    setShowBookingSuccess(false);
+                    navigate(userInfo?.role === 'doctor' ? '/doctor/dashboard' : '/patient/dashboard');
+                }}
+                title="Appointment Booked!"
+                message="Your request has been sent. You'll be notified once the doctor confirms."
+                buttonText="Go to Dashboard"
+                variant="booking"
+            />
+        </>
     );
 };
 

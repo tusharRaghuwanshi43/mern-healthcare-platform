@@ -7,6 +7,7 @@ import { toast } from 'react-hot-toast';
 import logo from '../assets/logo.png';
 import { setCredentials } from '../redux/authSlice';
 import { User, Lock, Mail, Activity, ArrowRight, ShieldCheck, UserSquare, Stethoscope, MapPin, Eye, EyeOff } from 'lucide-react';
+import SuccessCelebration from '../components/SuccessCelebration';
 const Signup = () => {
     const [activeTab, setActiveTab] = useState('patient');
     const [name, setName] = useState('');
@@ -23,6 +24,7 @@ const Signup = () => {
 
     const [error, setError] = useState('');
     const [signupSuccess, setSignupSuccess] = useState(false);
+    const [showCelebration, setShowCelebration] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const dispatch = useDispatch();
@@ -55,7 +57,7 @@ const Signup = () => {
             const { data } = await api.post('/api/auth/register', formData, config);
 
             toast.success('Account created! Please verify your email.');
-            setSignupSuccess(true);
+            setShowCelebration(true);
         } catch (err) {
             const msg = err.response?.data?.message || 'Registration failed';
             setError(msg);
@@ -305,7 +307,15 @@ const Signup = () => {
                     </>
                 )}
             </div>
+            <SuccessCelebration
+                show={showCelebration}
+                onClose={() => { setShowCelebration(false); setSignupSuccess(true); }}
+                title="Account Created!"
+                message="A verification link has been sent to your email. Please verify to activate your account."
+                buttonText="Continue to Login"
+                variant="account"
+            />
         </div>
     );
 };
-export default Signup;
+export default Signup;

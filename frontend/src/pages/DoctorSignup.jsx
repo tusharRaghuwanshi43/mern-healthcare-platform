@@ -5,6 +5,7 @@ import api from '../utils/api';
 import { toast } from 'react-hot-toast';
 import { setCredentials } from '../redux/authSlice';
 import { User, Lock, Mail, Image as ImageIcon, Briefcase, DollarSign, Clock, ShieldCheck, FileText, MapPin } from 'lucide-react';
+import SuccessCelebration from '../components/SuccessCelebration';
 const DoctorSignup = () => {
     const [formData, setFormData] = useState({
         name: '',
@@ -20,6 +21,7 @@ const DoctorSignup = () => {
     const [photoPreview, setPhotoPreview] = useState(null);
     const [error, setError] = useState('');
     const [signupSuccess, setSignupSuccess] = useState(false);
+    const [showCelebration, setShowCelebration] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const dispatch = useDispatch();
@@ -59,7 +61,7 @@ const DoctorSignup = () => {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             toast.success('Provider profile created! Please verify your email.');
-            setSignupSuccess(true);
+            setShowCelebration(true);
         } catch (err) {
             const msg = err.response?.data?.message || 'Failed to register. Please try again.';
             setError(msg);
@@ -166,7 +168,7 @@ const DoctorSignup = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-semibold text-textDark mb-1.5 ml-1">Consultation Fee ($)</label>
+                                    <label className="block text-sm font-semibold text-textDark mb-1.5 ml-1">Consultation Fee (₹)</label>
                                     <div className="relative">
                                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><DollarSign className="h-5 w-5 text-slate-400" /></div>
                                         <input type="number" name="consultationFee" min="0" required value={formData.consultationFee} onChange={handleInputChange} className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none transition-all" placeholder="150" />
@@ -204,6 +206,14 @@ const DoctorSignup = () => {
                     Already a provider? <Link to="/doctor/login" className="text-primary-600 hover:text-primary-700 font-bold ml-1">Sign in here</Link>
                 </p>
             </div>
+            <SuccessCelebration
+                show={showCelebration}
+                onClose={() => { setShowCelebration(false); setSignupSuccess(true); }}
+                title="Welcome, Doctor!"
+                message="Your Care Partner profile has been created. Verify your email to start accepting patients."
+                buttonText="Got it!"
+                variant="account"
+            />
         </div>
     );
 };

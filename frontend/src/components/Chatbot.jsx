@@ -394,7 +394,7 @@ const Chatbot = () => {
                                                                                     <div className="flex items-center gap-1.5 mt-0.5">
                                                                                         <span className="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded font-bold">{doc.averageRating}★</span>
                                                                                         <span className="text-[10px] text-slate-400 font-medium">({doc.totalReviews} reviews)</span>
-                                                                                        <span className="text-[10px] text-indigo-600 font-bold">${doc.consultationFee}</span>
+                                                                                        <span className="text-[10px] text-indigo-600 font-bold">₹{doc.consultationFee}</span>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>

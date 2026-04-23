@@ -103,7 +103,7 @@ const PATIENT_STEPS = [
                     <div className="bg-slate-50 border border-slate-200 py-2 rounded-lg text-center text-sm font-semibold text-slate-600">03:30 PM</div>
                 </div>
                 <div className="mt-auto bg-primary-50 border border-primary-100 rounded-xl p-4 flex justify-between items-center">
-                    <div className="text-primary-800 font-bold">$150 Fee</div>
+                    <div className="text-primary-800 font-bold">₹150 Fee</div>
                     <button className="bg-primary-600 text-white px-4 py-2 rounded-lg text-xs font-bold">Request</button>
                 </div>
             </div>
@@ -131,7 +131,7 @@ const PATIENT_STEPS = [
                             <CreditCard className="w-5 h-5 text-slate-400" />
                             <span className="text-sm font-bold text-slate-600">•••• 4242</span>
                         </div>
-                        <span className="text-sm font-black text-slate-800">$150.00</span>
+                        <span className="text-sm font-black text-slate-800">₹150.00</span>
                     </div>
                     <button className="w-full bg-slate-900 text-white py-3 rounded-xl text-sm font-bold">Go to Dashboard</button>
                 </motion.div>
@@ -162,7 +162,7 @@ const DOCTOR_STEPS = [
                     <div className="bg-primary-600 p-4 rounded-xl shadow-md text-white">
                         <CreditCard className="w-5 h-5 text-primary-200 mb-2" />
                         <p className="text-xs font-bold text-primary-100">Month Revenue</p>
-                        <p className="text-xl font-black">$4,250</p>
+                        <p className="text-xl font-black">₹4,250</p>
                     </div>
                 </div>
                 <div className="bg-white rounded-xl shadow-sm border border-slate-100 flex-1 p-4">
@@ -205,7 +205,7 @@ const DOCTOR_STEPS = [
                     </div>
                     <div className="flex gap-2 mb-4 text-xs font-medium text-slate-300">
                         <div className="bg-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-2"><Calendar className="w-3 h-3" /> Tue 15, 10:00 AM</div>
-                        <div className="bg-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-2 text-green-400"><CreditCard className="w-3 h-3" /> $150</div>
+                        <div className="bg-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-2 text-green-400"><CreditCard className="w-3 h-3" /> ₹150</div>
                     </div>
                     <div className="flex gap-3">
                         <motion.button
