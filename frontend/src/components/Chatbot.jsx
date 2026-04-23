@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-hot-toast';
 import api from '../utils/api';
-import auraAvatar from '../assets/aura_avatar.png';
+import auraAvatar from '../assets/ai-avatar.jpg';
 
 // ─── Greeting detection ────────────────────────────────────────────────────────
 const GREETING_PATTERNS = /^(hi|hii|hello|hey|good morning|good afternoon|good evening|how are you|howdy|greetings|what's up|whats up|sup|yo)\b/i;
@@ -185,7 +185,7 @@ const Chatbot = () => {
         if (isOpen && messages.length === 0) {
             setMessages([{
                 id: 1, type: 'bot', isWelcome: true,
-                text: 'Hello! I am **Chopper AI**, your intelligent health assistant. Describe your symptoms and I will suggest possible conditions and connect you with the best specialists in our network.',
+                text: 'Hello! I am **Medi AI**, your intelligent health assistant. Describe your symptoms and I will suggest possible conditions and connect you with the best specialists in our network.',
             }]);
         }
     }, [isOpen]);
@@ -205,7 +205,7 @@ const Chatbot = () => {
             await new Promise(r => setTimeout(r, 600)); // small delay for realism
             setMessages(prev => [...prev, {
                 id: Date.now() + 1, type: 'bot',
-                text: "Hello! 👋 It's great to hear from you. I'm Chopper AI, your personal health assistant. To help you best, could you describe any symptoms you're experiencing? I can suggest possible conditions and connect you with top-rated specialists."
+                text: "Hello! 👋 It's great to hear from you. I'm Medi AI, your personal health assistant. To help you best, could you describe any symptoms you're experiencing? I can suggest possible conditions and connect you with top-rated specialists."
             }]);
             setIsLoading(false);
             return;
@@ -279,13 +279,13 @@ const Chatbot = () => {
                             <div className="flex items-center gap-3 relative z-10">
                                 <div className="relative">
                                     <div className="w-11 h-11 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md shadow-inner overflow-hidden border border-white/20">
-                                        <img src={auraAvatar} alt="Chopper AI" className="w-full h-full object-cover scale-110" />
+                                        <img src={auraAvatar} alt="Medi AI" className="w-full h-full object-cover scale-110" />
                                     </div>
                                     <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-slate-900 shadow-[0_0_10px_rgba(74,222,128,0.5)]" />
                                 </div>
                                 <div>
                                     <h3 className="font-extrabold text-base tracking-tight flex items-center gap-1.5">
-                                        Chopper AI <Sparkles className="w-3.5 h-3.5 text-fuchsia-300" />
+                                        Medi AI <Sparkles className="w-3.5 h-3.5 text-fuchsia-300" />
                                     </h3>
                                     <p className="text-[11px] text-indigo-200 font-medium tracking-wide">Intelligent Health Assistant</p>
                                 </div>
@@ -312,7 +312,7 @@ const Chatbot = () => {
                                         {/* Bot avatar */}
                                         {msg.type === 'bot' && (
                                             <div className="w-8 h-8 rounded-xl overflow-hidden flex-shrink-0 border border-slate-200 shadow-sm self-start mt-1">
-                                                <img src={auraAvatar} alt="Chopper AI" className="w-full h-full object-cover" />
+                                                <img src={auraAvatar} alt="Medi AI" className="w-full h-full object-cover" />
                                             </div>
                                         )}
 
@@ -444,7 +444,7 @@ const Chatbot = () => {
                                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
                                     <div className="flex items-end gap-2.5">
                                         <div className="w-8 h-8 rounded-xl overflow-hidden flex-shrink-0 border border-slate-200 shadow-sm opacity-70">
-                                            <img src={auraAvatar} alt="Chopper AI" className="w-full h-full object-cover grayscale" />
+                                            <img src={auraAvatar} alt="Medi AI" className="w-full h-full object-cover grayscale" />
                                         </div>
                                         <div className="px-5 py-4 rounded-[1.25rem] bg-white border border-slate-100 shadow-sm rounded-bl-sm flex gap-1">
                                             <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" />
@@ -511,13 +511,13 @@ const Chatbot = () => {
                             <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-fuchsia-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                             <div className="relative">
                                 <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-white shadow-md">
-                                    <img src={auraAvatar} alt="Chopper AI" className="w-full h-full object-cover" />
+                                    <img src={auraAvatar} alt="Medi AI" className="w-full h-full object-cover" />
                                 </div>
                                 <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full z-10" />
                             </div>
                             <div className="flex flex-col items-start relative z-10 text-left">
                                 <span className="font-extrabold text-[#111827] text-[15px] leading-tight flex items-center gap-1.5">
-                                    Ask Chopper AI <Sparkles className="w-3.5 h-3.5 text-indigo-500 animate-pulse" />
+                                    Ask Medi AI <Sparkles className="w-3.5 h-3.5 text-indigo-500 animate-pulse" />
                                 </span>
                                 <span className="text-xs font-semibold text-slate-500">Your health co-pilot</span>
                             </div>
@@ -529,11 +529,11 @@ const Chatbot = () => {
                             animate={{ scale: 1, opacity: 1, y: 0 }}
                             exit={{ scale: 0.9, opacity: 0, y: 20 }}
                             drag
-                            dragConstraints={{ 
-                                left: -(typeof window !== 'undefined' ? window.innerWidth - 80 : 300), 
-                                right: 0, 
-                                top: -(typeof window !== 'undefined' ? window.innerHeight - 80 : 500), 
-                                bottom: 0 
+                            dragConstraints={{
+                                left: -(typeof window !== 'undefined' ? window.innerWidth - 80 : 300),
+                                right: 0,
+                                top: -(typeof window !== 'undefined' ? window.innerHeight - 80 : 500),
+                                bottom: 0
                             }}
                             dragElastic={0.1}
                             dragMomentum={false}
@@ -542,10 +542,10 @@ const Chatbot = () => {
                             className="sm:hidden flex items-center justify-center w-14 h-14 bg-white rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.2)] border border-slate-200 relative cursor-pointer"
                         >
                             <div className="w-full h-full rounded-full overflow-hidden border-2 border-white shadow-sm">
-                                <img src={auraAvatar} alt="Chopper AI" className="w-full h-full object-cover" />
+                                <img src={auraAvatar} alt="Medi AI" className="w-full h-full object-cover" />
                             </div>
                             <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full z-10" />
-                            
+
                             {/* Small AI Info Tag */}
                             <div className="absolute -top-2 -left-2 bg-indigo-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full shadow-sm flex items-center gap-0.5">
                                 <Sparkles className="w-2 h-2" /> AI
