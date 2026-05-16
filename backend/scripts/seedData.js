@@ -23,36 +23,38 @@ const specialties = [
     'Anesthesiologist', 'Surgeon', 'Plastic Surgeon', 'Emergency Medicine Specialist', 'Infectious Disease Specialist'
 ];
 
+// Indore hospital addresses with real GPS coordinates [lng, lat] — GeoJSON order
 const addresses = [
-    'Apollo Hospitals, Jubilee Hills, Hyderabad',
-    'Fortis Hospital, Bannerghatta Road, Bangalore',
-    'Max Super Speciality Hospital, Saket, New Delhi',
-    'Lilavati Hospital, Bandra West, Mumbai',
-    'Manipal Hospital, Old Airport Road, Bangalore',
-    'Medanta - The Medicity, Gurugram',
-    'Kokilaben Dhirubhai Ambani Hospital, Andheri West, Mumbai',
-    'Artemis Hospital, Sector 51, Gurugram',
-    'KIMS Hospitals, Secunderabad',
-    'PGIMER, Sector 12, Chandigarh',
-    'Christian Medical College, Vellore',
-    'Care Hospitals, Banjara Hills, Hyderabad',
-    'Sir Ganga Ram Hospital, Rajinder Nagar, New Delhi',
-    'Sankara Nethralaya, Nungambakkam, Chennai',
-    'Tata Memorial Hospital, Parel, Mumbai'
+    { address: 'Choithram Hospital & Research Centre, Manik Bagh Road, Indore', coordinates: [75.8767, 22.7273] },
+    { address: 'Bombay Hospital, South Tukoganj, Indore', coordinates: [75.8760, 22.7236] },
+    { address: 'Apollo Hospitals, Scheme 54, AB Road, Indore', coordinates: [75.8956, 22.7500] },
+    { address: 'CHL Hospital, AB Road, Scheme 54, Indore', coordinates: [75.8702, 22.7197] },
+    { address: 'Medanta Hospital, Bicholi Mardana, Indore', coordinates: [75.8856, 22.7489] },
+    { address: 'Unique Hospital, Vijay Nagar Square, Indore', coordinates: [75.9022, 22.7511] },
+    { address: 'Bhandari Hospital & Research Centre, Palasia, Indore', coordinates: [75.8683, 22.7260] },
+    { address: 'Vishesh Jupiter Hospital, Scheme 94C, Ring Road, Indore', coordinates: [75.8803, 22.7412] },
+    { address: 'SAIMS Hospital, Sanwer Road, Indore', coordinates: [75.8246, 22.7523] },
+    { address: 'Care CHL Hospitals, AB Road, Indore', coordinates: [75.8696, 22.7190] },
+    { address: 'Gokuldas Hospital, MG Road, Indore', coordinates: [75.8580, 22.7167] },
+    { address: 'Arihant Hospital, Scheme 140, Nipania, Indore', coordinates: [75.8924, 22.7624] },
+    { address: 'Index Medical College & Hospital, Pigdamber, Rau, Indore', coordinates: [75.9063, 22.7872] },
+    { address: 'Kasliwal Hospital, MG Road, Old Palasia, Indore', coordinates: [75.8577, 22.7197] },
+    { address: 'Kokilaben Hospital, Bhanwarkuan Main Road, Indore', coordinates: [75.8750, 22.7045] },
 ];
 
 const patientAddresses = [
-    'Koramangala, Bangalore',
-    'Andheri East, Mumbai',
-    'Connaught Place, New Delhi',
-    'Banjara Hills, Hyderabad',
-    'Anna Nagar, Chennai',
-    'Salt Lake City, Kolkata',
-    'Viman Nagar, Pune',
-    'Navrangpura, Ahmedabad',
-    'Gomti Nagar, Lucknow',
-    'Sector 17, Chandigarh'
+    'Vijay Nagar, Indore',
+    'Palasia, Indore',
+    'Scheme 54, Indore',
+    'Bhanwarkuan, Indore',
+    'South Tukoganj, Indore',
+    'MG Road, Indore',
+    'Rau, Indore',
+    'Nipania, Indore',
+    'Bhawarkuan, Indore',
+    'Rajwada, Indore'
 ];
+
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -109,15 +111,20 @@ const seedData = async () => {
                 const user = randomUsers[userIdx++];
                 const name = `${user.name.first} ${user.name.last}`;
 
+                const selectedAddress = addresses[getRandomInt(0, addresses.length - 1)];
                 const newDoc = await Doctor.create({
                     name: `Dr. ${name}`,
-                    email: `dr.${user.email}`, // Prepending dr. to ensure unique role-based email if needed
+                    email: `dr.${user.email}`,
                     password: 'password123',
                     role: 'doctor',
                     specialty: spec,
                     experienceYears: getRandomInt(5, 30),
                     consultationFee: getRandomInt(300, 1500),
-                    address: addresses[getRandomInt(0, addresses.length - 1)],
+                    address: selectedAddress.address,
+                    location: {
+                        type: 'Point',
+                        coordinates: selectedAddress.coordinates // [lng, lat] GeoJSON format
+                    },
                     averageRating: (Math.random() * (5 - 3.5) + 3.5).toFixed(1),
                     totalReviews: getRandomInt(10, 150),
                     totalPatients: getRandomInt(100, 2000),

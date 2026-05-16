@@ -379,11 +379,58 @@ const getDoctorById = async (req, res) => {
         res.status(500).json({ message: 'Server error fetching doctor' });
     }
 };
+// @desc    Get nearby doctors using geospatial query
+// @route   GET /api/doctors/nearby?lat=&lng=&radius=5000
+// @access  Public
+const getNearbyDoctors = async (req, res) => {
+    try {
+        const { lat, lng, radius = 5000 } = req.query;
+        if (!lat || !lng) {
+            return res.status(400).json({ message: 'Latitude and longitude are required' });
+        }
+        const doctors = await Doctor.aggregate([
+            {
+                $geoNear: {
+                    near: { type: 'Point', coordinates: [parseFloat(lng), parseFloat(lat)] },
+                    distanceField: 'distance', // meters
+                    maxDistance: parseFloat(radius),
+                    spherical: true
+                }
+            },
+            {
+                $lookup: {
+                    from: 'reviews',
+                    localField: '_id',
+                    foreignField: 'doctor',
+                    as: 'reviewDocs'
+                }
+            },
+            {
+                $addFields: {
+                    totalReviews: { $size: '$reviewDocs' },
+                    averageRating: {
+                        $cond: [
+                            { $gt: [{ $size: '$reviewDocs' }, 0] },
+                            { $round: [{ $avg: '$reviewDocs.rating' }, 1] },
+                            0
+                        ]
+                    }
+                }
+            },
+            { $project: { password: 0, reviewDocs: 0 } }
+        ]);
+        res.json(doctors);
+    } catch (error) {
+        console.error('Nearby Doctors Error:', error);
+        res.status(500).json({ message: 'Server error fetching nearby doctors' });
+    }
+};
 module.exports = {
     registerDoctor,
     loginDoctor,
     getDoctors,
     getDoctorById,
+    getNearbyDoctors,
     getDoctorProfile,
     updateDoctorProfile,
     deleteDoctorProfile,

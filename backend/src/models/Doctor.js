@@ -11,6 +11,17 @@ const doctorSchema = new mongoose.Schema({
     bio: { type: String, required: true },
     address: { type: String, required: true },
     phone: { type: String, default: '' },
+    location: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            default: 'Point'
+        },
+        coordinates: {
+            type: [Number], // [longitude, latitude]
+            default: [0, 0]
+        }
+    },
     availability: [{
         day: { type: String, enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] },
         slots: [{ type: String }] // e.g., "09:00 AM"
@@ -31,4 +42,5 @@ doctorSchema.pre('save', async function () {
 doctorSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
+doctorSchema.index({ location: '2dsphere' });
 module.exports = mongoose.model('Doctor', doctorSchema);

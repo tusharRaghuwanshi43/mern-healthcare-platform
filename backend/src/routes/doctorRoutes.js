@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { registerDoctor, loginDoctor, getDoctors, getDoctorById, getDoctorProfile, updateDoctorProfile, addDoctorReview, getDoctorReviews, getAllReviews, deleteDoctorProfile, likeReview } = require('../controllers/doctorController');
+const { registerDoctor, loginDoctor, getDoctors, getDoctorById, getNearbyDoctors, getDoctorProfile, updateDoctorProfile, addDoctorReview, getDoctorReviews, getAllReviews, deleteDoctorProfile, likeReview } = require('../controllers/doctorController');
 const { protect, doctor } = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
 router.post('/signup', upload.single('profilePhoto'), registerDoctor);
 router.post('/signin', loginDoctor);
 router.get('/', getDoctors);
+router.get('/nearby', getNearbyDoctors); // Must be before /:id
 router.get('/reviews/all', getAllReviews); // Global reviews for landing page
 // Doctor Profile Routes
 router.route('/me')
@@ -21,4 +22,5 @@ router.route('/:id/reviews')
 // Like/Unlike Review Route
 router.route('/reviews/:id/like')
     .put(protect, likeReview);
-module.exports = router;
+module.exports = router;
+

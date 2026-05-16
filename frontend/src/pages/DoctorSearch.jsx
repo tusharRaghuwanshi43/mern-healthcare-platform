@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, MapPin, Star, BadgeCheck, Clock, FileText, X, Calendar, CalendarDays, ChevronRight, Filter, Mail, Phone, Heart, RotateCcw } from 'lucide-react';
+import { Search, MapPin, Star, BadgeCheck, Clock, FileText, X, Calendar, CalendarDays, ChevronRight, Filter, Mail, Phone, Heart, RotateCcw, Navigation, Locate, SlidersHorizontal } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { toast } from 'react-hot-toast';
 import SuccessCelebration from '../components/SuccessCelebration';
+import useGeolocation from '../hooks/useGeolocation';
 const SPECIALTIES = ['All', 'Cardiologist', 'Dermatologist', 'Pediatrician', 'Neurologist', 'Orthopedic'];
 const SLOTS = ['09:00 AM', '10:00 AM', '11:00 AM', '01:00 PM', '02:30 PM', '04:00 PM'];
 const DoctorSearch = () => {
@@ -28,6 +29,12 @@ const DoctorSearch = () => {
     const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
     const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
     const [showBookingSuccess, setShowBookingSuccess] = useState(false);
+    // Geo-fencing / Near Me state
+    const { coords, loading: locationLoading, error: locationError, getLocation, clearLocation } = useGeolocation();
+    const [nearbyDoctors, setNearbyDoctors] = useState([]);
+    const [isNearbyMode, setIsNearbyMode] = useState(false);
+    const [nearbyRadius, setNearbyRadius] = useState(5); // km
+    const [nearbyLoading, setNearbyLoading] = useState(false);
     // Generate rolling 7-day view
     const getUpcomingDays = () => {
         const days = [];
@@ -51,6 +58,9 @@ const DoctorSearch = () => {
         setFilterDate('');
         setMaxPrice(2000);
         setMinRating(0);
+        setIsNearbyMode(false);
+        setNearbyDoctors([]);
+        clearLocation();
     };
     useEffect(() => {
         const fetchDoctors = async () => {
@@ -89,10 +99,61 @@ const DoctorSearch = () => {
         };
         fetchDoctors();
     }, []);
+
+    // Fetch nearby doctors when coords or radius changes
+    useEffect(() => {
+        if (!coords) return;
+        let cancelled = false;
+        const fetchNearby = async () => {
+            setNearbyLoading(true);
+            try {
+                const radiusInMeters = nearbyRadius * 1000;
+                const { data } = await api.get(`/api/doctors/nearby?lat=${coords.lat}&lng=${coords.lng}&radius=${radiusInMeters}`);
+                if (cancelled) return;
+                const formatted = data.map(doc => {
+                    const profilePhoto = (!doc.profilePhoto || doc.profilePhoto === 'null' || doc.profilePhoto === 'undefined')
+                        ? `https://ui-avatars.com/api/?name=${encodeURIComponent(doc.name)}&background=c084fc&color=fff&size=256`
+                        : doc.profilePhoto;
+                    const currentDay = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+                    const isAvailableCurrently = doc.availability?.some(a => a.day === currentDay && a.slots?.length > 0) || false;
+                    return {
+                        id: doc._id, name: doc.name,
+                        specialty: doc.specialty || 'General Practitioner',
+                        experience: `${doc.experienceYears || 0} Years`,
+                        location: doc.address || 'Medical Center',
+                        rating: doc.averageRating || 0, reviews: doc.totalReviews || 0,
+                        fee: doc.consultationFee || 100, isAvailable: isAvailableCurrently,
+                        availability: doc.availability, image: profilePhoto,
+                        email: doc.email, phone: doc.phone,
+                        distance: doc.distance // meters from $geoNear
+                    };
+                });
+                setNearbyDoctors(formatted);
+                setIsNearbyMode(true);
+            } catch (err) {
+                if (!cancelled) {
+                    console.error('Nearby fetch error', err);
+                    toast.error('Could not find nearby doctors. Please try again.');
+                }
+            } finally {
+                if (!cancelled) setNearbyLoading(false);
+            }
+        };
+        fetchNearby();
+        return () => { cancelled = true; };
+    }, [coords, nearbyRadius]);
+
+    const handleClearNearby = () => {
+        setIsNearbyMode(false);
+        setNearbyDoctors([]);
+        clearLocation();
+    };
+
     if (!userInfo) {
         return <Navigate to="/login" replace />;
     }
-    const filteredDoctors = doctors.filter(doc => {
+    const baseList = isNearbyMode ? nearbyDoctors : doctors;
+    const filteredDoctors = baseList.filter(doc => {
         if (doc.id === userInfo._id) return false;
         const matchesSearch = doc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             doc.specialty.toLowerCase().includes(searchTerm.toLowerCase());
@@ -194,6 +255,53 @@ const DoctorSearch = () => {
                                 Reset
                             </button>
                         </div>
+                        {/* Near Me */}
+                        <div className="mb-5 pb-5 border-b border-slate-100 dark:border-slate-800">
+                            <h3 className="font-bold text-slate-500 mb-3 text-xs uppercase tracking-widest flex items-center gap-1.5">
+                                <Locate className="w-3.5 h-3.5 text-rose-500" /> Near Me
+                            </h3>
+                            <button
+                                onClick={isNearbyMode ? handleClearNearby : getLocation}
+                                disabled={locationLoading || nearbyLoading}
+                                className={`w-full py-3 px-4 rounded-xl border-2 flex items-center justify-center gap-2.5 font-bold text-sm transition-all ${
+                                    isNearbyMode
+                                        ? 'bg-rose-50 dark:bg-rose-900/20 border-rose-400 text-rose-700 dark:text-rose-400 hover:bg-rose-100'
+                                        : (locationLoading || nearbyLoading)
+                                            ? 'bg-slate-50 border-slate-200 text-slate-400 cursor-not-allowed'
+                                            : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-rose-300 hover:bg-rose-50 hover:text-rose-700'
+                                }`}
+                            >
+                                {(locationLoading || nearbyLoading) ? (
+                                    <><div className="w-4 h-4 border-2 border-slate-300 border-t-rose-500 rounded-full animate-spin" />Detecting...</>
+                                ) : isNearbyMode ? (
+                                    <><X className="w-4 h-4" />Clear Location</>
+                                ) : (
+                                    <><Navigation className="w-4 h-4 text-rose-500" />Use My Location</>
+                                )}
+                            </button>
+                            {locationError && (
+                                <div className="mt-2 p-2.5 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 rounded-xl text-xs font-bold text-red-600 dark:text-red-400 flex items-start gap-2">
+                                    <X className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" /><span>{locationError}</span>
+                                </div>
+                            )}
+                            {isNearbyMode && coords && (
+                                <div className="mt-3">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className="text-xs font-bold text-slate-500">Search Radius</span>
+                                        <span className="bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 font-black px-2.5 py-0.5 rounded-lg text-sm border border-rose-100 dark:border-rose-800">{nearbyRadius} km</span>
+                                    </div>
+                                    <input type="range" min="1" max="20" step="1" value={nearbyRadius}
+                                        onChange={(e) => setNearbyRadius(Number(e.target.value))}
+                                        className="w-full h-1.5 bg-rose-100 dark:bg-rose-900/40 rounded-lg appearance-none cursor-pointer accent-rose-500"
+                                    />
+                                    <div className="flex justify-between text-xs font-bold text-slate-400 mt-1.5"><span>1 km</span><span>20 km</span></div>
+                                    <div className="mt-2.5 flex items-center gap-1.5 text-xs font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/20 px-3 py-1.5 rounded-xl border border-rose-100 dark:border-rose-800">
+                                        <MapPin className="w-3.5 h-3.5" />
+                                        {nearbyLoading ? 'Searching...' : `${nearbyDoctors.filter(d => d.id !== userInfo._id).length} doctors within ${nearbyRadius}km`}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                         {/* Specialization */}
                         <div className="mb-4">
                             <h3 className="font-bold text-slate-500 mb-2 text-sm uppercase tracking-widest">Specialization</h3>
@@ -213,22 +321,20 @@ const DoctorSearch = () => {
                         <div className="mb-5 pb-5 border-b border-slate-100">
                             <h3 className="font-bold text-slate-500 mb-3 text-xs uppercase tracking-widest">Availability</h3>
                             {/* Toggle: Available Today */}
-                            <label className={`flex items-center justify-between cursor-pointer group p-2.5 mb-3 rounded-xl transition-all ${availableToday ? 'bg-green-50 border border-green-100 shadow-sm' : 'hover:bg-slate-50 border border-transparent'}`}>
+                            <button 
+                                type="button"
+                                onClick={() => {
+                                    setAvailableToday(!availableToday);
+                                    if (!availableToday) setFilterDate('');
+                                }}
+                                className={`w-full flex items-center justify-between cursor-pointer group p-2.5 mb-3 rounded-xl transition-all outline-none ${availableToday ? 'bg-green-50 border border-green-100 shadow-sm' : 'hover:bg-slate-50 border border-transparent'}`}
+                            >
                                 <span className={`font-bold text-base tracking-wide transition-colors ${availableToday ? 'text-green-700' : 'text-slate-700 group-hover:text-primary-600'}`}>Available Today</span>
-                                <div className="relative">
-                                    <input
-                                        type="checkbox"
-                                        className="sr-only"
-                                        checked={availableToday}
-                                        onChange={(e) => {
-                                            setAvailableToday(e.target.checked);
-                                            if (e.target.checked) setFilterDate(''); // Clear specific date if "Today" is checked
-                                        }}
-                                    />
+                                <div className="relative pointer-events-none">
                                     <div className={`block w-12 h-6 rounded-full transition-colors ${availableToday ? 'bg-green-500 shadow-inner' : 'bg-slate-200'}`}></div>
                                     <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform shadow-sm ${availableToday ? 'transform translate-x-6' : ''}`}></div>
                                 </div>
-                            </label>
+                            </button>
                             <div className="flex items-center gap-3 mb-3">
                                 <div className="h-px bg-slate-200 flex-1"></div>
                                 <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">OR</span>
@@ -304,8 +410,17 @@ const DoctorSearch = () => {
                     </div>
                     <div className="mb-6 flex justify-between items-center">
                         <h2 className="text-xl font-extrabold text-slate-800 dark:text-white tracking-tight">
-                            {loading ? 'Finding Care Partners...' : `${filteredDoctors.length} ${filteredDoctors.length === 1 ? 'Care Partner' : 'Care Partners'} Available`}
+                            {(loading || nearbyLoading) ? 'Finding Care Partners...' :
+                                isNearbyMode
+                                    ? `${filteredDoctors.length} ${filteredDoctors.length === 1 ? 'Doctor' : 'Doctors'} within ${nearbyRadius}km`
+                                    : `${filteredDoctors.length} ${filteredDoctors.length === 1 ? 'Care Partner' : 'Care Partners'} Available`
+                            }
                         </h2>
+                        {isNearbyMode && (
+                            <span className="flex items-center gap-1.5 text-xs font-extrabold bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 px-3 py-1.5 rounded-full">
+                                <Navigation className="w-3 h-3" /> Near Me Active
+                            </span>
+                        )}
                     </div>
                     {loading ? (
                         <div className="flex justify-center py-20">
@@ -347,6 +462,15 @@ const DoctorSearch = () => {
                                                         <BadgeCheck className="text-primary-500 w-6 h-6" />
                                                     </div>
                                                     <p className="text-primary-600 font-bold bg-primary-50 px-3 py-1 rounded-md inline-block">{doc.specialty}</p>
+                                                    {isNearbyMode && doc.distance !== undefined && (
+                                                        <div className="mt-2 inline-flex items-center gap-1.5 bg-rose-50 text-rose-600 border border-rose-100 px-2.5 py-1 rounded-lg text-xs font-black">
+                                                            <MapPin className="w-3 h-3" />
+                                                            {doc.distance < 1000
+                                                                ? `${Math.round(doc.distance)}m away`
+                                                                : `${(doc.distance / 1000).toFixed(1)}km away`
+                                                            }
+                                                        </div>
+                                                    )}
                                                 </div>
                                                 <div className="mt-3 md:mt-0 flex flex-col items-end">
                                                     <div className="flex items-center bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-100 shadow-sm">
@@ -378,7 +502,7 @@ const DoctorSearch = () => {
                             </div>
                             <h3 className="text-2xl font-extrabold text-slate-800 mb-2">No Care Partners Found</h3>
                             <p className="text-slate-500 font-medium max-w-sm mx-auto">Try adjusting your filters or search terms to find what you're looking for.</p>
-                            <button onClick={() => { setSearchTerm(''); setSelectedSpecialty('All'); setAvailableToday(false); setMaxPrice(300); setMinRating(0); }} className="mt-8 bg-slate-100 hover:bg-slate-200 text-slate-700 px-6 py-2.5 rounded-full font-bold transition-colors">
+                            <button onClick={resetAllFilters} className="mt-8 bg-slate-100 hover:bg-slate-200 text-slate-700 px-6 py-2.5 rounded-full font-bold transition-colors">
                                 Reset All Filters
                             </button>
                         </div>
