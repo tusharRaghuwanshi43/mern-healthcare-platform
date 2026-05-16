@@ -51,11 +51,15 @@ Welcome to **Appointy**, a premium open-source healthcare platform designed to s
 - **Modern Aesthetics:** Features glassmorphism, high-contrast layouts, smooth `framer-motion` animations, and a polished visual language.
 - **100% Responsive:** Flawless experience across desktop, tablet, and mobile devices.
 
+### 📍 Geo-Fencing & Locality-Based Doctor Search
+- **GPS Location Detection:** Uses the browser's native Geolocation API to detect the user's real-time coordinates — no third-party map API required.
+- **True Radius-Based Filtering:** Powered by **MongoDB `$geoNear` geospatial aggregation**, doctors are fetched sorted by actual distance (in meters) from the user.
+- **Adjustable Search Radius:** Users can dynamically slide between **1km – 20km** radius to fine-tune their search — ideal for urgent, same-day bookings.
+- **Distance Badges:** Each doctor card displays the exact distance (e.g., `3.2 km away`) when Near Me mode is active.
+
 ---
 
 ## 📸 Screenshots
-
-*(Replace these placeholder images by adding screenshots of your application in the `screenshots` folder)*
 
 | Landing Page | Medi AI Assistant |
 | :---: | :---: |
@@ -78,7 +82,7 @@ Welcome to **Appointy**, a premium open-source healthcare platform designed to s
 
 **Backend Infrastructure:**
 - **Framework:** Node.js, Express.js
-- **Database:** MongoDB (mongoose)
+- **Database:** MongoDB (mongoose) with **`2dsphere` geospatial indexing** for location queries
 - **Authentication:** JSON Web Tokens (JWT), Google OAuth
 - **External Data:** [randomuser.me API](https://randomuser.me/) (for realistic seeding)
 - **Payments:** Stripe API
@@ -171,11 +175,13 @@ npm run dev
 ```text
 mern-healthcare-platform/
 ├── backend/
+│   ├── scripts/
+│   │   └── seedData.js      # DB seeder — 90 doctors across 15 Indore hospitals (with GPS coords)
 │   ├── src/
 │   │   ├── config/      # Database & Environment setups
-│   │   ├── controllers/ # Logic (aiController, doctorController, etc.)
+│   │   ├── controllers/ # Logic (aiController, doctorController — incl. getNearbyDoctors)
 │   │   ├── middleware/  # JWT Auth & Request validation
-│   │   ├── models/      # Mongoose Schemas (User, Doctor, Appointment)
+│   │   ├── models/      # Mongoose Schemas (User, Doctor, Appointment, etc.)
 │   │   └── routes/      # Express API Router Definitions
 │   └── server.js        # Main Entry Point
 │
@@ -183,11 +189,13 @@ mern-healthcare-platform/
     ├── src/
     │   ├── assets/      # Static graphics, Logos, and Vectors
     │   ├── components/  # Reusable UI (Chatbot, BookingWidget, NavBar)
-    │   ├── pages/       # Distinct App Screens (Login, Landing, Dashboards)
+    │   ├── hooks/       # Custom React Hooks (useGeolocation — GPS detection)
+    │   ├── pages/       # Distinct App Screens (Login, Landing, Dashboards, DoctorSearch)
     │   ├── redux/       # Redux State (authSlice)
     │   ├── utils/       # Helpers (api.js global axios config)
     │   └── App.jsx      # Global Router setup
-    ├── .env             # Environment configs
+    ├── .env             # Production environment configs
+    ├── .env.local       # Local dev overrides
     └── vite.config.js   # Vite Configured for Tailwind 4
 ```
 
