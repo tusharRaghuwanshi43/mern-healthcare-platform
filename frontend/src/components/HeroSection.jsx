@@ -280,7 +280,7 @@ const HeroSection = ({ onWatchDemo }) => {
                                     {stats.totalDoctors > 0 ? `${stats.totalDoctors}+` : '500+'}
                                 </span>{' '}
                                 Verified Care Partners */}
-                                AI-Powered Scheduling · Live
+                                AI-Powered Booking · Live
                             </span>
                         </motion.div>
 
