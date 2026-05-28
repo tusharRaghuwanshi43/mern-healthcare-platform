@@ -48,8 +48,8 @@ const ContactUs = () => {
                                     </div>
                                     <div>
                                         <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Phone</p>
-                                        <p className="text-lg font-bold text-slate-800">+1 (800) 123-4567</p>
-                                        <p className="text-sm text-slate-500">Mon-Fri, 9am - 6pm EST</p>
+                                        <p className="text-lg font-bold text-slate-800">+91 12345 67890</p>
+                                        <p className="text-sm text-slate-500">Mon-Fri, 9am - 6pm IST</p>
                                     </div>
                                 </div>
                                 <div className="flex items-start gap-4">
@@ -68,8 +68,8 @@ const ContactUs = () => {
                                     </div>
                                     <div>
                                         <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Office</p>
-                                        <p className="text-lg font-bold text-slate-800">123 Health Ave, Suite 400</p>
-                                        <p className="text-sm text-slate-500">New York, NY 10001</p>
+                                        <p className="text-lg font-bold text-slate-800">Vijay Nagar, Indore</p>
+                                        <p className="text-sm text-slate-500">Madhya Pradesh, India</p>
                                     </div>
                                 </div>
                             </div>
