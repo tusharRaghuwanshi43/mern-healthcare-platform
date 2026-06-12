@@ -277,16 +277,99 @@ const Landing = () => {
                 </div>
             </section>
             {/* FOOTER */}
-            <footer className="bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 py-12 px-6">
-                <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-                    <div className="flex items-center space-x-2 font-bold text-xl text-primary-600 dark:text-primary-400">
-                        <img src={logo} alt="logo" className="h-8 mb-2 w-auto object-contain" />
-                        <span className='font-extrabold text-xl text-slate-800 dark:text-white tracking-tight'>Appointy</span>
+            <footer className="relative bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-white overflow-hidden">
+                {/* Decorative gradient orbs */}
+                <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary-600/5 rounded-full blur-3xl pointer-events-none"></div>
+                <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-indigo-600/5 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div className="relative max-w-7xl mx-auto px-6 pt-16 pb-8">
+                    {/* Top Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-14">
+                        {/* Brand Column */}
+                        <div className="lg:col-span-1">
+                            <div className="flex items-center space-x-2.5 mb-5">
+                                <img src={logo} alt="logo" className="h-9 w-auto object-contain brightness-0 invert" />
+                                <span className="font-extrabold text-2xl tracking-tight">Appointy</span>
+                            </div>
+                            <p className="text-slate-400 text-sm leading-relaxed mb-6 max-w-xs">
+                                Your trusted healthcare companion. Book appointments, consult specialists, and manage your health — all in one platform.
+                            </p>
+                            {/* Social Icons */}
+                            <div className="flex items-center gap-3">
+                                <a href="https://github.com/tusharRaghuwanshi43" target="_blank" rel="noopener noreferrer" className="group w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center hover:bg-primary-600 hover:border-primary-500 transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-primary-500/20">
+                                    <svg className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" /></svg>
+                                </a>
+                                <a href="https://www.linkedin.com/in/tusharraghuwanshi" target="_blank" rel="noopener noreferrer" className="group w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center hover:bg-[#0077B5] hover:border-[#0077B5] transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-[#0077B5]/20">
+                                    <svg className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
+                                </a>
+                                <a href="mailto:tusharraghuwanshi82@gmail.com" className="group w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center hover:bg-red-500 hover:border-red-400 transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-red-500/20">
+                                    <svg className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                                </a>
+                            </div>
+                        </div>
+
+                        {/* Quick Links */}
+                        <div>
+                            <h4 className="font-bold text-sm uppercase tracking-widest text-slate-300 mb-5">Quick Links</h4>
+                            <ul className="space-y-3">
+                                <li><Link to="/" className="text-slate-400 hover:text-white text-sm font-medium transition-colors hover:translate-x-1 inline-block">Home</Link></li>
+                                <li><Link to="/about" className="text-slate-400 hover:text-white text-sm font-medium transition-colors hover:translate-x-1 inline-block">About Us</Link></li>
+                                <li><Link to="/contact" className="text-slate-400 hover:text-white text-sm font-medium transition-colors hover:translate-x-1 inline-block">Contact Us</Link></li>
+                                <li><Link to="/doctors" className="text-slate-400 hover:text-white text-sm font-medium transition-colors hover:translate-x-1 inline-block">Find a Doctor</Link></li>
+                            </ul>
+                        </div>
+
+                        {/* Services */}
+                        <div>
+                            <h4 className="font-bold text-sm uppercase tracking-widest text-slate-300 mb-5">Services</h4>
+                            <ul className="space-y-3">
+                                <li><span className="text-slate-400 text-sm font-medium">Appointment Booking</span></li>
+                                <li><span className="text-slate-400 text-sm font-medium">AI Symptom Checker</span></li>
+                                <li><span className="text-slate-400 text-sm font-medium">Digital Prescriptions</span></li>
+                            </ul>
+                        </div>
+
+                        {/* Connect */}
+                        <div>
+                            <h4 className="font-bold text-sm uppercase tracking-widest text-slate-300 mb-5">Connect</h4>
+                            <ul className="space-y-3">
+                                <li>
+                                    <a href="mailto:tusharraghuwanshi82@gmail.com" className="text-slate-400 hover:text-white text-sm font-medium transition-colors flex items-center gap-2">
+                                        <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                                        tusharraghuwanshi82@gmail.com
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://github.com/tusharRaghuwanshi43" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white text-sm font-medium transition-colors flex items-center gap-2">
+                                        <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" /></svg>
+                                        tusharRaghuwanshi43
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://www.linkedin.com/in/tusharraghuwanshi" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white text-sm font-medium transition-colors flex items-center gap-2">
+                                        <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
+                                        Tushar Raghuwanshi
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://github.com/tusharRaghuwanshi43/mern-healthcare-platform" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white text-sm font-medium transition-colors flex items-center gap-2">
+                                        <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                                        Source Code
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                    <p className="text-slate-500 dark:text-slate-400 font-medium text-sm">© 2026 Appointy Technologies. All rights reserved.</p>
-                    <div className="flex gap-6 text-sm font-bold text-slate-600 dark:text-slate-400">
-                        <a href="#" className="hover:text-primary-600 dark:hover:text-primary-400">Privacy Policy</a>
-                        <a href="#" className="hover:text-primary-600 dark:hover:text-primary-400">Terms of Service</a>
+
+                    {/* Divider */}
+                    <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                        <p className="text-slate-500 text-sm font-medium">
+                            © {new Date().getFullYear()} Appointy. Designed & Developed by <a href="https://github.com/tusharRaghuwanshi43" target="_blank" rel="noopener noreferrer" className="text-primary-400 hover:text-primary-300 font-bold transition-colors">Tushar Raghuwanshi</a>
+                        </p>
+                        <div className="flex gap-6 text-sm font-medium text-slate-500">
+                            <a href="#" className="hover:text-slate-300 transition-colors">Privacy Policy</a>
+                            <a href="#" className="hover:text-slate-300 transition-colors">Terms of Service</a>
+                        </div>
                     </div>
                 </div>
             </footer>
