@@ -46,7 +46,7 @@ const Landing = () => {
         return <Navigate to="/patient/dashboard" replace />;
     }
     return (
-        <div className="w-full bg-white font-sans overflow-x-hidden transition-colors duration-300">
+        <div id="home" className="w-full bg-white font-sans overflow-x-hidden transition-colors duration-300">
             {/* HERO SECTION */}
             <HeroSection onWatchDemo={() => setShowDemo(true)} />
             {/* HOW IT WORKS */}
@@ -312,8 +312,8 @@ const Landing = () => {
                         <div>
                             <h4 className="font-bold text-sm uppercase tracking-widest text-slate-300 mb-5">Quick Links</h4>
                             <ul className="space-y-3">
-                                <li><Link to="/" className="text-slate-400 hover:text-white text-sm font-medium transition-colors hover:translate-x-1 inline-block">Home</Link></li>
-                                <li><Link to="/about" className="text-slate-400 hover:text-white text-sm font-medium transition-colors hover:translate-x-1 inline-block">About Us</Link></li>
+                                <li><Link to="/#home" className="text-slate-400 hover:text-white text-sm font-medium transition-colors hover:translate-x-1 inline-block">Home</Link></li>
+                                <li><Link to="/#about" className="text-slate-400 hover:text-white text-sm font-medium transition-colors hover:translate-x-1 inline-block">About Us</Link></li>
                                 <li><Link to="/contact" className="text-slate-400 hover:text-white text-sm font-medium transition-colors hover:translate-x-1 inline-block">Contact Us</Link></li>
                                 <li><Link to="/doctors" className="text-slate-400 hover:text-white text-sm font-medium transition-colors hover:translate-x-1 inline-block">Find a Doctor</Link></li>
                             </ul>
