@@ -21,7 +21,7 @@ const corsOptions = {
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-uipath-api-key'],
 };
 
 app.use(cors(corsOptions));
@@ -44,6 +44,7 @@ app.use('/api/payments', require('./src/routes/paymentRoutes'));
 app.use('/api/doctors', require('./src/routes/doctorRoutes'));
 app.use('/api/appointments', require('./src/routes/appointmentRoutes'));
 app.use('/api/ai', require('./src/routes/aiRoutes'));
+app.use('/api/automation', require('./src/routes/automationRoutes'));
 
 // Start server (REQUIRED for Render)
 const PORT = process.env.PORT || 5000;

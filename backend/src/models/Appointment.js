@@ -8,6 +8,17 @@ const appointmentSchema = new mongoose.Schema({
     paymentStatus: { type: String, enum: ['pending', 'paid', 'refunded'], default: 'pending' },
     paymentId: { type: String }, // Stripe or Razorpay ID
     consultationFee: { type: Number, required: true },
-    prescription: { type: mongoose.Schema.Types.ObjectId, ref: 'Prescription' }
+    prescription: { type: mongoose.Schema.Types.ObjectId, ref: 'Prescription' },
+    automation: {
+        status: {
+            type: String,
+            enum: ['pending', 'queued', 'processing', 'completed', 'failed'],
+            default: 'pending'
+        },
+        reminderSent: { type: Boolean, default: false },
+        doctorNotificationSent: { type: Boolean, default: false },
+        lastProcessedAt: { type: Date, default: null },
+        errorMessage: { type: String, default: '' }
+    }
 }, { timestamps: true });
 module.exports = mongoose.model('Appointment', appointmentSchema);

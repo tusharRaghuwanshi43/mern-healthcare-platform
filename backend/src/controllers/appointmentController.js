@@ -1,5 +1,6 @@
 const Appointment = require('../models/Appointment');
 const Doctor = require('../models/Doctor');
+const { queueAppointmentAutomation } = require('../services/automationService');
 // @desc    Create new appointment
 // @route   POST /api/appointments
 // @access  Private (Patient)
@@ -31,6 +32,14 @@ const createAppointment = async (req, res) => {
             status: 'pending',
             paymentStatus: 'pending'
         });
+
+        // Trigger UiPath automation asynchronously — do NOT block the booking response
+        try {
+            await queueAppointmentAutomation(appointment._id);
+        } catch (automationError) {
+            console.error('Automation queue failed (booking still saved):', automationError.message);
+        }
+
         res.status(201).json(appointment);
     } catch (error) {
         console.error("Create Appointment Error:", error);
